@@ -24,7 +24,8 @@ grid = numpy.ceil(numpy.sqrt(p))
 
 # Get Poisson samples around mu(x).
 
-p=1   #forcing only a single iteration to run
+#p=1   #forcing only a single iteration to run
+splines = []
 for i in range(p):
 	pyplot.subplot(grid,grid,i+1)
 	X = prob_spline.time_transform(bc_time)
@@ -41,7 +42,7 @@ for i in range(p):
 	handles.append(s)
 
 	# Build a spline using the Poisson loglikelihood.
-	poisson_spline = prob_spline.PoissonSpline(sigma = 0.2, period=prob_spline.period())
+	poisson_spline = prob_spline.PoissonSpline(sigma = 0, period=prob_spline.period())
 	poisson_spline.fit(X, Y)
 	l = pyplot.plot(prob_spline.inv_time_transform(x), poisson_spline(x),
 	                label = 'Fitted PoissonSpline($\sigma =$ {:g})'.format(
@@ -51,4 +52,5 @@ for i in range(p):
 	# Add decorations to plot.
 	pyplot.xlabel('$x$')
 	pyplot.legend(handles, [h.get_label() for h in handles])
+	splines.append(poisson_spline)
 pyplot.show()

@@ -11,6 +11,16 @@ import bloodmeal
 def F(coeff_mat,time):            #Returns the negative piece of the birdcount derivative, or 0.
 	return(-numpy.clip(birdcounts_derivative(coeff_mat,time),-numpy.inf,0))	
 
+def birdcounts(splines,time):   #the splines are a list of the calculated splines, time is the time to be differentiated
+	return(numpy.array([splines[i](time) for i in range(len(splines))]))
+
+def birdcounts_derivative(splines,time,sign="+"):
+	vals = numpy.array([splines[i].derivative(i) for i in range(len(splines))])
+	if sign!="+":
+		return(numpy.array([numpy.min((vals[i],0)) for i in range(len(vals))]))
+	else:
+		return(numpy.array([numpy.max((vals[i],0)) for i in range(len(vals))]))
+
 
 
 def alpha_calc(bm,counts):   #If 0 bm returns 0, atm if 0 counts returns inf
@@ -32,17 +42,17 @@ def rhs_count(Y,t, beta1, beta2, gammab, v, b, d, dv, dEEE, bird_counts,bloodmea
 	r=Y[2*p:3*p]
 	sv=Y[-2]
 	iv=Y[-1]
-	alpha_val = alpha_calc(bloodmeals(t),birdcounts(t))
-	N=bc(t)
+	alpha_val = alpha_calc(bloodmeals(t),bird_counts(t))
+	N=bird_counts(t)
 	denom = numpy.dot(N,alpha_val)
 	lambdab = beta1*v*iv*numpy.array(alpha_val)/denom
 	lambdav = v*(numpy.dot(beta2*i,alpha_val))/denom
 	# Bird Mortality
-	ds = BirdCount.xi(bc_coeff_mat,t)*(1-eps)-lambdab*s-BirdCount.F(bc_coeff_mat,t)*s/N
-	di = BirdCount.xi(bc_coeff_mat,t)*eps+lambdab*s-gammab*i-BirdCount.F(bc_coeff_mat,t)*i/N
-	dr = gammab*i-BirdCount.F(bc_coeff_mat,t)*r/N
-	dsv = bloodmeal.vector_in(mos_coeff,t)-lambdav*sv-bloodmeal.fun(mos_coeff,t)*sv  #Need to be updated
-	div = lambdav*sv-bloodmeal.fun(mos_coeff,t)*iv           # Need to be updated
+	ds = birdcounts_derivative(bird_counts,t)*(1-eps)-lambdab*s-birdcounts_derivative(bird_counts,t,sign="-")*s/N
+	di = birdcounts_derivative(bird_counts,t))*eps+lambdab*s-gammab*i-birdcounts_derivative(bird_counts,t,sign="-")*i/N
+	dr = gammab*i-birdcounts_derivative(bird_counts,t,sign="-")*r/N
+	dsv = -lambdav*sv  #Need to be updated
+	div = lambdav*sv           # Need to be updated
 	#dSv = mospop(t) - dIv
 	dY = numpy.hstack((ds,di,dr,dsv,div))
 	return dY
@@ -123,8 +133,8 @@ def run_ode_solver(beta1,rhs_func,bm_coeff_mat,bc_coeff_mat,mos_coeff,tstart,ten
 	Y = ode_solver(Y0,T,args = (beta1, beta2, gammab, v, b, d, dv, dEEE, bc_coeff_mat,bm_coeff_mat,bloodmeal.vector_pop,bloodmeal.vector_derivative,bloodmeal.vector_in,bloodmeal.fun,mos_coeff,p))
 	return(Y)
 
-def run_ode(beta1,rhs_func,bm_coeff_mat,bc_coeff_mat,mos_coeff,tstart,tend,flag):
-	p = len(bm_coeff_mat[:,0])+1
+def run_ode(beta1,rhs_func,bloodmeals,bird_counts,mosquitos,tstart,tend,flag):
+	p = len(bird_counts)
 	beta2 = 1
 	gammab = .1*numpy.ones(p)
 	v=.14			# Biting Rate of Vectors on Hosts
