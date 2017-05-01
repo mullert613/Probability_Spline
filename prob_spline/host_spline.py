@@ -20,14 +20,16 @@ class HostSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period()):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), n_samples = 0):
 
 
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
-		self.time,self.Y = self.read_data(data_file)
+		self.data_file = data_file
+
+		self.read_data()
 		self.X=prob_spline.time_transform(self.time)
 
 		if hasattr(sigma,"__len__"):
@@ -40,13 +42,13 @@ class HostSpline():
 
 		self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
 
-	def read_data(self,data_file):
+	def read_data(self):
 
-		count_data = pd.read_csv(data_file,index_col=0)
+		count_data = pd.read_csv(self.data_file,index_col=0)
 		self.birdnames = count_data.index
-		time = numpy.array([int(x) for x in count_data.columns])
-		mat = count_data.as_matrix()
-		return(time,mat)
+		self.time = numpy.array([int(x) for x in count_data.columns])
+		self.Y = count_data.as_matrix()
+		return()
 	
 	def get_host_splines(self,X,Y_mat,sigma,period):
 		splines=[]
@@ -64,6 +66,13 @@ class HostSpline():
 
 	def derivative(self,X):
 		return(numpy.array([self.splines[i].derivative(i) for i in range(len(self.splines))]))
+
+	def pos_der(self,X):
+		return(numpy.array([numpy.max((j,0)) for j in self.derivative(X)]))
+	
+	def neg_der(self,X):
+		return(numpy.array([numpy.min((j,0)) for j in self.derivative(X)]))
+	
 
 	def plot(self,p=range(7)):
 		'''
@@ -86,7 +95,10 @@ class HostSpline():
 				label = 'Fitted PoissonSpline($\sigma =$ {:g})'.format(self.splines[j].sigma))
 			handles.append(l[0])
 			pyplot.xlabel('$x$')
-			pyplot.legend(handles, [h.get_label() for h in handles])
+			pyplot.legend(handles, [h.get_label() for h in handles],fontsize = 'xx-small',loc=0)
 			plot_counter+=1
 		pyplot.show()
 		return()
+
+	def generate_samples(self,distribution = 'p'):
+		return (numpy.random.poisson(lam=data,size = (n_samples,len(data))))

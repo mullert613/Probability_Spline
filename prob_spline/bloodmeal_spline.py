@@ -14,7 +14,7 @@ import matplotlib.pyplot as pyplot
 import scipy.stats
 
 
-class VectorSpline():
+class BloodmealSpline():
 	'''
 	Utilizing the MultinomialSpline code and a datafile consisting of
 	the sampled bird counts to generate the individual splines for each bird
@@ -23,24 +23,28 @@ class VectorSpline():
 
 	def __init__(self, data_file, sigma = 0, period=prob_spline.period()):
 
-
+		self.data_file = data_file
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
-		self.time,self.Y = self.read_data(data_file)
+		self.read_data()
 		self.X=prob_spline.time_transform(self.time)
 
 		assert (sigma >= 0), 'sigma must be nonnegative.'
 		self.spline = self.get_vector_spline(sigma,period)
 
-	def read_data(self,data_file):
+	def read_data(self):	
+		
+		'''
+		Read the given data_file to pull the required data
+		'''
 
-		count_data = pd.read_csv(data_file,index_col=0)
+		count_data = pd.read_csv(self.data_file,index_col=0)
 		self.birdnames = count_data.index
-		time = numpy.array([int(x) for x in count_data.columns])
-		mat = count_data.as_matrix()
-		return(time,mat.T)
+		self.time = numpy.array([int(x) for x in count_data.columns])
+		self.Y = count_data.as_matrix().T
+		return()
 	
 	def get_vector_spline(self,sigma,period):
 		multinomial_spline = prob_spline.MultinomialSpline(sigma = sigma,period = period)
@@ -48,12 +52,9 @@ class VectorSpline():
 		return(multinomial_spline)
 
 	def evaluate(self,X):			# Evaluate the splines at given values X
-		return(numpy.array([self.splines[i](X) for i in range(len(self.splines))]))
+		return(self.spline(X))
 
 	__call__ = evaluate
-
-	def derivative(self,X):
-		return(numpy.array([self.splines[i].derivative(i) for i in range(len(self.splines))]))
 
 	def plot(self):
 
