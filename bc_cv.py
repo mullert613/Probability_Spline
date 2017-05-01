@@ -8,6 +8,7 @@ import numpy
 import scipy.stats
 import seaborn
 import sklearn.model_selection
+import pickle
 
 import prob_spline
 import test_common
@@ -23,11 +24,11 @@ birdnames = pd.read_csv(bc_file,index_col=0).index
 
 p = len(bc_mat)
 grid = numpy.ceil(numpy.sqrt(p))
-
-for i in range(p):
-  pyplot.figure(i+1)
+sigma_vals = []
+for bird in range(p):
+  pyplot.figure(bird+1)
   X = prob_spline.time_transform(bc_time)
-  Y = numpy.squeeze(bc_mat[i,:].T)
+  Y = numpy.squeeze(bc_mat[bird,:].T)
 
   spline = prob_spline.PoissonSpline(period=2)
   # Find the best sigma value by K-fold cross-validation.
@@ -41,7 +42,7 @@ for i in range(p):
   spline = gridsearch.best_estimator_
 
   pyplot.subplot(2, 1, 1)
-  pyplot.title(birdnames[i])
+  pyplot.title(birdnames[bird])
   pyplot.plot(param_grid['sigma'],
               gridsearch.cv_results_['mean_test_score'],
               marker = 'o')
@@ -66,9 +67,15 @@ for i in range(p):
                       spline.__class__.__name__,
                       spline.sigma))
   handles.append(l[0])
-  pyplot.xlabel('$x$')
-  pyplot.legend(handles, [h.get_label() for h in handles])
-  with open('%s_spline.pkl' %birdnames[j], 'wb') as output:
-    pickle.dump(mos_results,output) 
-  pyplot.tight_layout()
-pyplot.show()
+  sigma_vals.append(spline.sigma)
+  #pyplot.xlabel('$x$')
+  #pyplot.legend(handles, [h.get_label() for h in handles])
+  with open('%s_spline.pkl' %birdnames[bird], 'wb') as output:
+    pickle.dump(spline,output) 
+with open('sigma_vals.pkl', 'wb') as output:
+  pickle.dump(sigma_vals,output)
+
+  #pyplot.tight_layout()
+#pyplot.show()
+
+

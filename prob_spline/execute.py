@@ -7,7 +7,6 @@ import scipy.sparse
 import scipy.sparse.linalg
 import sklearn.base
 import sklearn.utils.validation
-import probspline
 import pandas as pd
 from . import base
 
@@ -52,5 +51,8 @@ class Execute(abc.ABC):
 
 	def derivative(self,splines,X):
 		return(numpy.array([splines[i].derivative(i) for i in range(len(splines))]))
+
+	def generate_samples(self,data,n_samples,distribution = 'p'):
+		return (numpy.random.poisson(lam=data,size = (n_samples,len(data))))
 
 
