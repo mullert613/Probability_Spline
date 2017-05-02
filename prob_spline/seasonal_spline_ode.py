@@ -19,6 +19,9 @@ class Seasonal_Spline_ODE():
 		self.tstart = tstart
 		self.tend = tend
 		self.beta_1 = beta_1
+		self.bc_splines = bc_splines
+		self.bm_splines = bm_splines
+		self.mos_curve = mos_curve
 		self.Y = self.run_ode(beta_1,bm_splines,bc_splines,mos_curve)
 
 	def alpha_calc(self,bm,counts):   #If 0 bm returns 0, atm if 0 counts returns inf
@@ -85,22 +88,22 @@ class Seasonal_Spline_ODE():
 		iv=Y[:,-1]
 		return(S,I,R,sv,iv)
 
-	def eval_ode_results(self,Y,bm_splines,bc_splines,mos_curve,alpha=1):	
+	def eval_ode_results(self,alpha=1):	
 		import pylab
-		self.birdnames = bc_splines.birdnames
+		self.birdnames = self.bc_splines.birdnames
 		name_list = list(self.birdnames)
 		name_list.append('Vector')
 		T = scipy.linspace(self.tstart,self.tend,1001)
 		p = self.p
-		s,i,r,sv,iv = self.get_SIR_vals(Y)
+		s,i,r,sv,iv = self.get_SIR_vals(self.Y)
 		bc = numpy.zeros((p,len(T)))
 		bm = numpy.zeros((p,len(T)))
 		alpha_val = numpy.zeros((p,len(T)))
 		mos_pop = numpy.zeros(len(T))
-		bc = bc_splines(T)
-		bm = bm_splines(T)
-		alpha_val = self.alpha_calc(bm_splines(T),bc_splines(T))
-		mos_pop = mos_curve(T)	
+		bc = self.bc_splines(T)
+		bm = self.bm_splines(T)
+		alpha_val = self.alpha_calc(self.bm_splines(T),self.bc_splines(T))
+		mos_pop = self.mos_curve(T)	
 		sym = ['b','g','r','c','m','y','k','--','g--']
 		pylab.figure(1)
 		for k in range(self.p):

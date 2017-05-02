@@ -16,9 +16,11 @@ import pandas as pd
 bc_file = "Days_BirdCounts.csv"
 msq_file = "Vector_Data(NoZeros).csv"
 bm_file = "Days_BloodMeal.csv"
+bc_sigma = pickle.load(open('sigma_vals.pkl','rb'))
+bm_sigma = 0.199
 
-bc_splines = prob_spline.HostSpline(bc_file)
-bm_splines = prob_spline.BloodmealSpline(bm_file)
+bc_splines = prob_spline.HostSpline(bc_file,sigma=bc_sigma)
+bm_splines = prob_spline.BloodmealSpline(bm_file,sigma=bm_sigma)
 mos_curve = prob_spline.MosCurve(msq_file)
 tstart = prob_spline.time_transform(90)
 tend = prob_spline.time_transform(270)
