@@ -55,8 +55,8 @@ class Seasonal_Spline_ODE():
 		ds = bc_splines.pos_der(t)*(1-eps) - lambdab*s
 		di = bc_splines.pos_der(t)*eps + lambdab*s - self.gammab*i
 		dr = self.gammab*i - bc_splines.pos_der(t)
-		dsv = mos_curve.pos_der(t)*iv-lambdav*sv  
-		div = lambdav*sv - mos_curve.pos_der(t)*iv          
+		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
+		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv         
 
 		dY = 365./2*numpy.hstack((ds,di,dr,dsv,div))  # the 365/2 is the rate of change of the time transform
 		return dY
