@@ -11,7 +11,10 @@ import pandas as pd
 from . import base
 import prob_spline
 import matplotlib.pyplot as pyplot
+from time import gmtime, strftime
+import joblib
 
+#bc_file = "Days_BirdCounts.csv"
 
 class HostSpline():
 	'''
@@ -31,6 +34,7 @@ class HostSpline():
 
 		self.read_data()
 		self.X=prob_spline.time_transform(self.time)
+		self.n_samples = n_samples
 
 		if hasattr(sigma,"__len__"):
 			for j in sigma:
@@ -39,8 +43,20 @@ class HostSpline():
 			assert (sigma >= 0), 'sigma must be nonnegative.'
 			sigma = sigma*numpy.ones(len(self.Y))
 
+		assert (n_samples >= 0), 'number of samples must be nonnegative'
 
-		self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
+		self.generate_samples()
+		if (self.n_samples>0):
+			print('Start Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			# as written this doesn't output what I want
+			with joblib.Parallel(n_jobs = -1) as parallel:
+				output = parallel(joblib.delayed(self.get_host_splines)(self.X,self.samples[j],sigma,period) for j in range(len(self.samples)))
+			self.splines = output
+			print('Finish Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+		else:
+			self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
 
 	def read_data(self):
 
@@ -59,8 +75,15 @@ class HostSpline():
 			splines.append(poisson_spline)
 		return(splines)
 
-	def evaluate(self,X):			# Evaluate the splines at given values X
-		return(numpy.array([self.splines[i](X) for i in range(len(self.splines))]))
+	def evaluate(self,X,index=0):			
+		'''
+		Evalute the splines at the given time X.
+		If multiple samples have been generated, evalute the index'th sampled splines at time X
+		'''
+		if self.n_samples <= 1 :
+			return(numpy.array([self.splines[i](X) for i in range(len(self.splines))]))
+		else:
+			return(numpy.array([self.splines[index][i](X) for i in range(len(self.splines[index]))]))
 
 	__call__ = evaluate
 
@@ -100,5 +123,6 @@ class HostSpline():
 		pyplot.show()
 		return()
 
-	def generate_samples(self,distribution = 'p'):
-		return (numpy.random.poisson(lam=data,size = (n_samples,len(data))))
+	def generate_samples(self):
+		self.samples = numpy.random.poisson(lam=self.Y,size = (self.n_samples,len(self.Y),len(self.Y.T))) 
+		return()

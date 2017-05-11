@@ -12,6 +12,9 @@ from . import base
 import prob_spline
 import matplotlib.pyplot as pyplot
 import joblib
+from time import gmtime, strftime
+
+#msq_file = "Vector_Data(NoZeros).csv"
 
 class MosSpline():
 	'''
@@ -41,9 +44,13 @@ class MosSpline():
 		self.X=prob_spline.time_transform(self.time)
 
 		if (self.n_samples>0):
+			print('Start Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			with joblib.Parallel(n_jobs = -1) as parallel:
 				output = parallel(joblib.delayed(self.get_host_splines)(self.X,self.samples[j],sigma,period) for j in range(len(self.samples)))
 			self.splines = output
+			print('Finish Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 		else:
 			self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
 

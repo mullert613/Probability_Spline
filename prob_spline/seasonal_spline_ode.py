@@ -12,6 +12,7 @@ from . import base
 import prob_spline
 import matplotlib.pyplot as pyplot
 import scipy.stats
+from time import gmtime, strftime
 
 class Seasonal_Spline_ODE():
 
