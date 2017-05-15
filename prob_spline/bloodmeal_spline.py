@@ -74,7 +74,7 @@ class BloodmealSpline():
 
 	__call__ = evaluate
 
-	def plot(self):
+	def plot(self,index=0):
 		# Note to self, fix axis values so that all the graphs display the same range
 		x = numpy.linspace(numpy.min(self.X), numpy.max(self.X), 1001)
 		p = len(self.Y)
@@ -86,8 +86,12 @@ class BloodmealSpline():
 			handles=[]
 			s = pyplot.scatter(prob_spline.inv_time_transform(self.X),Y[j],label = self.birdnames[j])
 			handles.append(s)
-			l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x)[j],
-				label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
+			if self.n_samples<=1:
+				l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x)[j],
+					label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
+			else:
+				l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x,index)[j],
+					label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
 			if j==0:
 				handles.append(l[0])
 			pyplot.legend(handles, [h.get_label() for h in handles])

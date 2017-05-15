@@ -16,14 +16,17 @@ from time import gmtime, strftime
 
 class Seasonal_Spline_ODE():
 
-	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1):
+	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0):
 		self.tstart = tstart
 		self.tend = tend
-		self.beta_1 = beta_1
+		if find_beta==1:
+			self.beta_1 = scipy.optimize.minimize(self.findbeta,beta_1,args=(self.rhs,bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+		else:
+			self.beta_1 = beta_1
 		self.bc_splines = bc_splines
 		self.bm_splines = bm_splines
 		self.mos_curve = mos_curve
-		self.Y = self.run_ode(beta_1,bm_splines,bc_splines,mos_curve)
+		self.Y = self.run_ode(self.beta_1,bm_splines,bc_splines,mos_curve)
 
 	def alpha_calc(self,bm,counts):   #If 0 bm returns 0, atm if 0 counts returns inf
 		bm_rat = bm / numpy.sum(bm)
@@ -59,7 +62,7 @@ class Seasonal_Spline_ODE():
 		return dY
 
 	def run_ode(self,beta1,bm_splines,bc_splines,mos_curve):
-		self.p = len(bc_splines(0))
+		self.p = len(bm_splines.Y)
 		self.beta2 = 1
 		self.gammab = .1*numpy.ones(self.p)
 		self.v=.14			# Biting Rate of Vectors on Hosts

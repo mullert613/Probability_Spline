@@ -34,8 +34,9 @@ class MosCurve():
 		self.X=prob_spline.time_transform(self.time)
 
 		assert (sigma >= 0), 'sigma must be nonnegative.'
+		self.n_samples = n_samples
 
-		self.splines = MosClass(data_file,sigma)
+		self.splines = MosClass(data_file,sigma=sigma,period=period,n_samples=n_samples)
 
 	def read_data(self):
 
@@ -50,8 +51,11 @@ class MosCurve():
 
 	__call__ = evaluate
 
-	def derivative(self,X):
-		return(numpy.array(self.splines.derivative(X)))
+	def derivative(self,X,index=0):
+		if self_n_samples <= 1:
+			return(numpy.array(self.splines.derivative(X)))
+		else:
+			return(numpy.array(self.splines[index].derivative(X)))
 
 	def pos_der(self,X):
 		return(numpy.array(numpy.max((self.derivative(X),0))))

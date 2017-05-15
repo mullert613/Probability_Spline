@@ -87,8 +87,11 @@ class HostSpline():
 
 	__call__ = evaluate
 
-	def derivative(self,X):
-		return(numpy.array([self.splines[i].derivative(i) for i in range(len(self.splines))]))
+	def derivative(self,X,index=0):
+		if self.n_samples <= 1:
+			return(numpy.array([self.splines[i].derivative(X) for i in range(len(self.splines))]))
+		else:
+			return(numpy.array([self.splines[index][i].derivative(X) for i in range(len(self.splines))]))
 
 	def pos_der(self,X):
 		return(numpy.array([numpy.max((j,0)) for j in self.derivative(X)]))
@@ -97,7 +100,7 @@ class HostSpline():
 		return(numpy.array([numpy.min((j,0)) for j in self.derivative(X)]))
 	
 
-	def plot(self,p=range(7)):
+	def plot(self,idnex=0,p=range(7)):
 		'''
 		A function to plot the data and spline fit of the specified species
 		Defaults to all species given, but allows for input of specified species index
@@ -114,8 +117,12 @@ class HostSpline():
 			s = pyplot.scatter(prob_spline.inv_time_transform(self.X), self.Y[j,:], color = 'black',
 	                   label = self.birdnames[j])
 			handles.append(s)
-			l = pyplot.plot(prob_spline.inv_time_transform(x), self.splines[j](x),
-				label = 'Fitted PoissonSpline($\sigma =$ {:g})'.format(self.splines[j].sigma))
+			if self.n_samples<=1:
+				l = pyplot.plot(prob_spline.inv_time_transform(x), self.splines[j](x),
+					label = 'Fitted PoissonSpline($\sigma =$ {:g})'.format(self.splines[j].sigma))
+			else:
+				l = pyplot.plot(prob_spline.inv_time_transform(x), self.splines[index][j](x),
+					label = 'Fitted PoissonSpline($\sigma =$ {:g})'.format(self.splines[index][j].sigma))
 			handles.append(l[0])
 			pyplot.xlabel('$x$')
 			pyplot.legend(handles, [h.get_label() for h in handles],fontsize = 'xx-small',loc=0)

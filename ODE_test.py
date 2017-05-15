@@ -29,4 +29,4 @@ ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,ten
 with open('ODE_test.pkl', 'wb') as output:
 	pickle.dump(ODE,output) 
 
-#ODE = pickle.load(open("ODE_test.pkl",'rb'))
+ODE.eval_ode_results()
