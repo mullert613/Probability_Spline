@@ -24,28 +24,23 @@ class BloodmealSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),n_samples=0):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),sample=0):
 
 		self.data_file = data_file
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
-		self.n_samples = n_samples
 		self.read_data()
-		self.generate_samples()
+
 
 		self.X=prob_spline.time_transform(self.time)
 
 		assert (sigma >= 0), 'sigma must be nonnegative.'
-		if (self.n_samples>0):
-			print('Start Time')
-			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-			with joblib.Parallel(n_jobs = -1) as parallel:
-				output = parallel(joblib.delayed(self.get_vector_spline)(self.X,self.samples[j],sigma,period) for j in range(len(self.samples)))
-			self.splines = output
-			print('Finish Time')
-			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+
+		if sample == 1:
+			self.generate_samples()
+			self.splines = self.get_vector_spline(self.X,self.samples,sigma,period)
 		else:
 			self.splines = self.get_vector_spline(self.X,self.Y,sigma,period)
 
@@ -66,15 +61,12 @@ class BloodmealSpline():
 		multinomial_spline.fit(X,Y.T)
 		return(multinomial_spline)
 
-	def evaluate(self,X,index=0):			# Evaluate the splines at given values X
-		if (self.n_samples<=1):
-			return(self.splines(X))
-		else:
-			return(self.splines[index](X))
+	def evaluate(self,X):			# Evaluate the splines at given values X
+		return(self.splines(X))
 
 	__call__ = evaluate
 
-	def plot(self,index=0):
+	def plot(self):
 		# Note to self, fix axis values so that all the graphs display the same range
 		x = numpy.linspace(numpy.min(self.X), numpy.max(self.X), 1001)
 		p = len(self.Y)
@@ -86,12 +78,8 @@ class BloodmealSpline():
 			handles=[]
 			s = pyplot.scatter(prob_spline.inv_time_transform(self.X),Y[j],label = self.birdnames[j])
 			handles.append(s)
-			if self.n_samples<=1:
-				l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x)[j],
-					label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
-			else:
-				l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x,index)[j],
-					label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
+			l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x)[j],
+				label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
 			if j==0:
 				handles.append(l[0])
 			pyplot.legend(handles, [h.get_label() for h in handles])
@@ -101,13 +89,11 @@ class BloodmealSpline():
 
 	def generate_samples(self):
 		p_vals = self.Y/numpy.sum(self.Y,axis=0)
-		total_bites = numpy.random.poisson(numpy.sum(self.Y,axis=0),size=(self.n_samples,len(numpy.sum(self.Y,axis=0)))) # the sampled total number of bites
-		self.samples=[]
-		for i in range(self.n_samples):		# number of samples
-			bm_temp = numpy.zeros(self.Y.shape)
-			for j in range(len(self.Y.T)):	# number of time points
-					bm_temp[:,j] = numpy.random.multinomial(total_bites[i][j],p_vals[:,j])
-			self.samples.append(bm_temp)
+		total_bites = numpy.random.poisson(numpy.sum(self.Y,axis=0),size=(len(numpy.sum(self.Y,axis=0)))) # the sampled total number of bites
+		bm_temp = numpy.zeros(self.Y.shape)
+		for j in range(len(self.Y.T)):	# number of time points
+				bm_temp[:,j] = numpy.random.multinomial(total_bites[j],p_vals[:,j])
+		self.samples =bm_temp
 
 		return()
 
