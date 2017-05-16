@@ -23,7 +23,7 @@ class MosCurve():
 	'''
 
 
-	def __init__(self, data_file, MosClass,sigma = 0, period=prob_spline.period(), n_samples = 0):
+	def __init__(self, data_file, MosClass,sigma = 0, period=prob_spline.period(), sample=0):
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
@@ -34,9 +34,8 @@ class MosCurve():
 		self.X=prob_spline.time_transform(self.time)
 
 		assert (sigma >= 0), 'sigma must be nonnegative.'
-		self.n_samples = n_samples
 
-		self.splines = MosClass(data_file,sigma=sigma,period=period,n_samples=n_samples)
+		self.curves = MosClass(data_file,sigma=sigma,period=period,sample=sample)
 
 	def read_data(self):
 
@@ -47,15 +46,12 @@ class MosCurve():
 		return()
 	
 	def evaluate(self,X):			# Evaluate the splines at given values X
-		return(numpy.array(self.splines(X)))
+		return(numpy.array(self.curves(X)))
 
 	__call__ = evaluate
 
-	def derivative(self,X,index=0):
-		if self_n_samples <= 1:
-			return(numpy.array(self.splines.derivative(X)))
-		else:
-			return(numpy.array(self.splines[index].derivative(X)))
+	def derivative(self,X):
+		return(numpy.array(self.curves.derivative(X)))
 
 	def pos_der(self,X):
 		return(numpy.array(numpy.max((self.derivative(X),0))))

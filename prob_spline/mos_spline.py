@@ -25,7 +25,7 @@ class MosSpline():
 	'''
 
 
-	def __init__(self, data_file,sigma = 0, period=prob_spline.period(), n_samples = 0):
+	def __init__(self, data_file,sigma = 0, period=prob_spline.period(), sample = 0):
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
@@ -35,22 +35,13 @@ class MosSpline():
 		
 		self.data_file = data_file
 
-		self.n_samples = n_samples
-		
 		self.read_data()
 
-		self.generate_samples()
-	
 		self.X=prob_spline.time_transform(self.time)
 
-		if (self.n_samples>0):
-			print('Start Time')
-			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-			with joblib.Parallel(n_jobs = -1) as parallel:
-				output = parallel(joblib.delayed(self.get_host_splines)(self.X,self.samples[j],sigma,period) for j in range(len(self.samples)))
-			self.splines = output
-			print('Finish Time')
-			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+		if sample==1:
+			self.generate_samples()
+			self.splines = self.get_host_splines(self.X,self.samples,sigma,period)
 		else:
 			self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
 
@@ -68,7 +59,7 @@ class MosSpline():
 		poisson_spline.fit(X, Y)
 		return(poisson_spline)
 
-	def evaluate(self,X):			# Evaluate the splines at given values X
+	def evaluate(self,X,index=0):			# Evaluate the splines at given values X
 		return(numpy.array(self.splines(X)))
 
 	__call__ = evaluate
@@ -102,6 +93,6 @@ class MosSpline():
 		return()
 
 	def generate_samples(self):
-		self.samples = numpy.random.poisson(lam=self.Y,size = (self.n_samples,len(self.Y.T))) 
+		self.samples = numpy.random.poisson(lam=self.Y,size = (len(self.Y.T))) 
 		return()
 

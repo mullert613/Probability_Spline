@@ -80,7 +80,7 @@ class Seasonal_Spline_ODE():
 		I0 = .01*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
 		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv))
-		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve))
+		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),full_output=0)
 		return(Y)
 		
 	def get_SIR_vals(self,Y):		# Takes the values from scipy.integrate.odeint and returns the SIR vals

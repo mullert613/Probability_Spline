@@ -25,16 +25,13 @@ class MosConstant():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), n_samples = 0):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), sample = 0):
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
 		assert (sigma >= 0), 'sigma must be nonnegative.'
 
-		assert (n_samples >=0), 'number of samples must be nonnegative.'
-
-		assert isinstance(n_samples,int), 'number of samples must be an integer'
 
 		self.data_file = data_file
 
@@ -42,17 +39,15 @@ class MosConstant():
 		self.X=prob_spline.time_transform(self.time)
 		self.sigma = sigma
 		self.period = period
-		self.n_samples = n_samples
 
 		
 		self.read_data()
 
-		self.generate_samples()
-		
-		if (self.n_samples > 0):
-			with joblib.Parallel(n_jobs = -1) as parallel:
-				output = parallel(joblib.delayed(self.get_host_splines)(self.samples[j]) for j in range(len(self.samples)))
-			self.constant = output
+
+
+		if sample==1:
+			self.generate_samples()
+			self.constant = self.get_host_splines(self.samples)
 		else:
 			self.constant = self.get_host_splines(self.Y)
 
@@ -93,5 +88,5 @@ class MosConstant():
 		return()
 
 	def generate_samples(self):
-		self.samples = numpy.random.poisson(lam=self.Y,size = (self.n_samples,len(self.Y.T))) 
+		self.samples = numpy.random.poisson(lam=self.Y,size = (len(self.Y.T))) 
 		return()
