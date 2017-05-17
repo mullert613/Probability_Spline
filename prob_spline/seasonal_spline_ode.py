@@ -20,7 +20,7 @@ class Seasonal_Spline_ODE():
 		self.tstart = tstart
 		self.tend = tend
 		if find_beta==1:
-			self.beta_1 = scipy.optimize.minimize(self.findbeta,beta_1,args=(self.rhs,bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+			self.beta_1 = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
 		else:
 			self.beta_1 = beta_1
 		self.bc_splines = bc_splines
@@ -32,7 +32,7 @@ class Seasonal_Spline_ODE():
 		bm_rat = bm / numpy.sum(bm)
 		count_rat = counts / numpy.sum(counts)
 		with numpy.errstate(divide="ignore"):
-			alpha = numpy.where(count_rat>0,bm_rat/count_rat,0)
+			alpha = numpy.where(count_rat>10**-5,bm_rat/count_rat,0)
 			weight = numpy.sum(alpha*counts,axis=0)
 			return(alpha/weight)
 
@@ -52,9 +52,9 @@ class Seasonal_Spline_ODE():
 		lambdab = self.beta1*self.v*iv*numpy.array(alpha_val)*N_v/denom
 		lambdav = self.v*(numpy.dot(self.beta2*i*N,alpha_val))/denom
 
-		ds = bc_splines.pos_der(t)*(1-eps) - lambdab*s
-		di = bc_splines.pos_der(t)*eps + lambdab*s - self.gammab*i
-		dr = self.gammab*i - bc_splines.pos_der(t)
+		ds = bc_splines.pos_der(t)*(1-eps-s) - lambdab*s
+		di = bc_splines.pos_der(t)*(eps-i) + lambdab*s - self.gammab*i
+		dr = self.gammab*i - r*bc_splines.pos_der(t)
 		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
 		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv         
 
@@ -80,7 +80,7 @@ class Seasonal_Spline_ODE():
 		I0 = .01*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
 		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv))
-		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),full_output=0)
+		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),mxstep = 0, full_output=0)
 		return(Y)
 		
 	def get_SIR_vals(self,Y):		# Takes the values from scipy.integrate.odeint and returns the SIR vals
@@ -129,7 +129,7 @@ class Seasonal_Spline_ODE():
 		pylab.title("Feeding Index Values")
 		return()
 
-	def findbeta(beta1,rhs_func,bm_splines,bc_splines,mos_curve):  
+	def findbeta(self,beta1,bm_splines,bc_splines,mos_curve):  
 		print(beta1)
 		Y = run_ode(beta1,self.rhs,bm_splines,bc_splines,mos_curve)
 		s,i,r,sv,iv = get_SIR_vals(Y,self.p)

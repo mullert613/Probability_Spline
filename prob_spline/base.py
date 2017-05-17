@@ -48,7 +48,7 @@ class ProbSpline(sklearn.base.BaseEstimator, abc.ABC):
         else:
             self._fit_smoothing_spline(X, Y)
 
-    def derivative(self,X):
+    def log_derivative(self,X):
         '''
         The Y values of the derivative of the spline at X.
         '''
@@ -68,9 +68,9 @@ class ProbSpline(sklearn.base.BaseEstimator, abc.ABC):
              for i in ix],axis=-1)
         # Evaluate the polynomials in those intervals at the X values.
 
-        z = numpy.polyval(coef, ((X - self.knots_[0]) % self.period) - (self.knots_[ix]-self.knots_[0]))
-        mu = self._transform_inverse(z).clip(self._parameter_min,
-                                             self._parameter_max)
+        dz = numpy.polyval(coef, ((X - self.knots_[0]) % self.period) - (self.knots_[ix]-self.knots_[0]))
+        mu = self._transform_inverse_log_der(X,dz)
+
         if numpy.isscalar(X):
             mu =numpy.squeeze(mu)
         return mu

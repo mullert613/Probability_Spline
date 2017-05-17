@@ -78,8 +78,8 @@ class BloodmealSpline():
 			handles=[]
 			s = pyplot.scatter(prob_spline.inv_time_transform(self.X),Y[j],label = self.birdnames[j])
 			handles.append(s)
-			l = pyplot.plot(prob_spline.inv_time_transform(x), self.spline(x)[j],
-				label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.spline.sigma))
+			l = pyplot.plot(prob_spline.inv_time_transform(x), self.splines(x)[j],
+				label = 'Fitted MultinomialSpline($\sigma =$ {:g})'.format(self.splines.sigma))
 			if j==0:
 				handles.append(l[0])
 			pyplot.legend(handles, [h.get_label() for h in handles])

@@ -38,3 +38,7 @@ class PoissonSpline(base.ProbSpline):
                                     category = RuntimeWarning,
                                     message = 'overflow encountered in exp')
             return numpy.exp(Z) - cls._alpha
+
+    def _transform_inverse_log_der(self,X,dZ):
+        return(dZ)
+

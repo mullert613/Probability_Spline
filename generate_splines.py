@@ -17,9 +17,9 @@ def generate_splines(to_be_run,file_name,N,Mos_Class=0,sigma=0,sample=0):
 		print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 		with joblib.Parallel(n_jobs=-1) as parallel:
 			output = parallel(joblib.delayed(to_be_run)(file_name,sigma=sigma,sample=sample) for j in range(N))
-
 		print('Finish Time')
 		print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+		
 	else:		#change function to take *kargs?
 		print('Start Time')
 		print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))

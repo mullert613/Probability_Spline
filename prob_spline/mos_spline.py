@@ -64,8 +64,8 @@ class MosSpline():
 
 	__call__ = evaluate
 
-	def derivative(self,X):
-		return(numpy.array(self.splines.derivative(X)))
+	def log_derivative(self,X):
+		return(numpy.array(self.splines.log_derivative(X)))
 
 	def pos_der(self,X):
 		return(numpy.array(numpy.max((self.derivative(X),0))))

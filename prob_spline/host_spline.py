@@ -75,14 +75,14 @@ class HostSpline():
 
 	__call__ = evaluate
 
-	def derivative(self,X):
-		return(numpy.array([self.splines[i].derivative(X) for i in range(len(self.splines))]))
+	def log_derivative(self,X):
+		return(numpy.array([self.splines[i].log_derivative(X) for i in range(len(self.splines))]))
 
 	def pos_der(self,X):
-		return(numpy.array([numpy.max((j,0)) for j in self.derivative(X)]))
+		return(numpy.array([numpy.max((j,0)) for j in self.log_derivative(X)]))
 	
 	def neg_der(self,X):
-		return(numpy.array([numpy.min((j,0)) for j in self.derivative(X)]))
+		return(numpy.array([numpy.min((j,0)) for j in self.log_derivative(X)]))
 	
 
 	def plot(self,p=range(7)):
