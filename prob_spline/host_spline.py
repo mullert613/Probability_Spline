@@ -46,7 +46,7 @@ class HostSpline():
 			self.generate_samples()
 			self.splines = self.get_host_splines(self.X,self.samples,sigma,period)
 		else:
-			self.splines = self.get_host_splines(self.X,self.Y,sigma.period)
+			self.splines = self.get_host_splines(self.X,self.Y,sigma,period)
 
 
 	def read_data(self):

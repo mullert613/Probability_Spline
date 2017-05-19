@@ -26,7 +26,7 @@ p = len(bc_mat)
 grid = numpy.ceil(numpy.sqrt(p))
 sigma_vals = []
 for bird in range(p):
-  pyplot.figure(bird+1)
+  #pyplot.figure(bird+1)
   X = prob_spline.time_transform(bc_time)
   Y = numpy.squeeze(bc_mat[bird,:].T)
 
@@ -40,7 +40,7 @@ for bird in range(p):
                                                     error_score = 0)
   gridsearch.fit(X, Y)
   spline = gridsearch.best_estimator_
-
+  '''
   pyplot.subplot(2, 1, 1)
   pyplot.title(birdnames[bird])
   pyplot.plot(param_grid['sigma'],
@@ -70,6 +70,7 @@ for bird in range(p):
   sigma_vals.append(spline.sigma)
   #pyplot.xlabel('$x$')
   #pyplot.legend(handles, [h.get_label() for h in handles])
+  '''
   with open('%s_spline.pkl' %birdnames[bird], 'wb') as output:
     pickle.dump(spline,output) 
 with open('sigma_vals.pkl', 'wb') as output:

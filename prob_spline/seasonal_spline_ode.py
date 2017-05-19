@@ -20,7 +20,8 @@ class Seasonal_Spline_ODE():
 		self.tstart = tstart
 		self.tend = tend
 		if find_beta==1:
-			self.beta_1 = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+			self.beta_1=val.x
 		else:
 			self.beta_1 = beta_1
 		self.bc_splines = bc_splines
@@ -131,8 +132,8 @@ class Seasonal_Spline_ODE():
 
 	def findbeta(self,beta1,bm_splines,bc_splines,mos_curve):  
 		print(beta1)
-		Y = run_ode(beta1,self.rhs,bm_splines,bc_splines,mos_curve)
-		s,i,r,sv,iv = get_SIR_vals(Y,self.p)
+		Y = self.run_ode(beta1,bm_splines,bc_splines,mos_curve)
+		s,i,r,sv,iv = self.get_SIR_vals(Y)
 		N=s+i+r
 		N=bc_splines(self.tend)
 		r = r[-1]*N
