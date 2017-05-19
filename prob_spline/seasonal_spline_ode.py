@@ -44,8 +44,11 @@ class Seasonal_Spline_ODE():
 		s=Y[0:p]
 		i=Y[p:2*p]
 		r=Y[2*p:3*p]
-		sv=Y[-2]
-		iv=Y[-1]
+		sv=Y[-4]
+		iv=Y[-3]
+		c = Y[-2]   #cumulative infections
+		e = Y[-1]	#exposure
+
 		alpha_val = self.alpha_calc(bm_splines(t),bc_splines(t))
 		N=bc_splines(t)
 		N_v = mos_curve(t)
@@ -57,9 +60,12 @@ class Seasonal_Spline_ODE():
 		di = bc_splines.pos_der(t)*(eps-i) + lambdab*s - self.gammab*i
 		dr = self.gammab*i - r*bc_splines.pos_der(t)
 		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
-		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv         
+		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv
 
-		dY = 365./2*numpy.hstack((ds,di,dr,dsv,div))  # the 365/2 is the rate of change of the time transform
+		dc = numpy.sum(lambdab*s*N) 		#cumulative infections eq
+		de = numpy.sum(s*N)        			#exposure eq
+
+		dY = 365./2*numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
 		return dY
 
 	def run_ode(self,beta1,bm_splines,bc_splines,mos_curve):
@@ -80,7 +86,10 @@ class Seasonal_Spline_ODE():
 		S0 = .99*numpy.ones(self.p)
 		I0 = .01*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
-		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv))
+		C0 = 0
+		E0 = 0
+
+		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv,C0,E0))
 		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),mxstep = 0, full_output=0)
 		return(Y)
 		
@@ -89,9 +98,11 @@ class Seasonal_Spline_ODE():
 		S=Y[:,0:p]
 		I=Y[:,p:2*p]
 		R=Y[:,2*p:3*p]
-		sv=Y[:,-2]
-		iv=Y[:,-1]
-		return(S,I,R,sv,iv)
+		sv=Y[:,-4]
+		iv=Y[:,-3]
+		c = Y[:,-2]
+		e = Y[:,-1]
+		return(S,I,R,sv,iv,c,e)
 
 	def eval_ode_results(self,alpha=1):	
 		import pylab
@@ -100,7 +111,7 @@ class Seasonal_Spline_ODE():
 		name_list.append('Vector')
 		T = scipy.linspace(self.tstart,self.tend,1001)
 		p = self.p
-		s,i,r,sv,iv = self.get_SIR_vals(self.Y)
+		s,i,r,sv,iv,c,e = self.get_SIR_vals(self.Y)
 		bc = numpy.zeros((p,len(T)))
 		bm = numpy.zeros((p,len(T)))
 		alpha_val = numpy.zeros((p,len(T)))
@@ -133,12 +144,8 @@ class Seasonal_Spline_ODE():
 	def findbeta(self,beta1,bm_splines,bc_splines,mos_curve):  
 		print(beta1)
 		Y = self.run_ode(beta1,bm_splines,bc_splines,mos_curve)
-		s,i,r,sv,iv = self.get_SIR_vals(Y)
-		N=s+i+r
-		N=bc_splines(self.tend)
-		r = r[-1]*N
-		i = i[-1]*N
-		finalrec = numpy.ma.divide(r.sum()+i.sum(),N.sum())
+		s,i,r,sv,iv,c,e = self.get_SIR_vals(Y)
+		finalrec = numpy.where(e[-1]>0,c[-1]/e[-1],0)
 		final = finalrec-.13
 		print(numpy.abs(final))
 		return numpy.abs(final)
