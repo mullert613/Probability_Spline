@@ -1,0 +1,9 @@
+import pickle
+
+holder = [0,1,10,100,1000,10000]
+splines=[]
+for j in range(len(holder)):
+	val = pickle.load(open('splines_with_sigma=%d.pkl' %holder[j],'rb'))
+	splines.append(val)
+	pyplot.figure(j)
+	val.plot()
