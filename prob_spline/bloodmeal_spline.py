@@ -24,13 +24,14 @@ class BloodmealSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),sample=0):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),sample=0,combine_index=[]):
 
 		self.data_file = data_file
 
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
+		self.combine_index=combine_index
 		self.read_data()
 
 
@@ -51,10 +52,29 @@ class BloodmealSpline():
 		'''
 
 		count_data = pd.read_csv(self.data_file,index_col=0)
-		self.birdnames = count_data.index
 		self.time = numpy.array([int(x) for x in count_data.columns])
-		self.Y = count_data.as_matrix()
-		return()
+		if self.combine_index==[]:		
+			self.birdnames = list(count_data.index)
+			self.Y = count_data.as_matrix()
+		else:
+			birdnames = list(count_data.index)
+			Y = count_data.as_matrix()
+			p=len(birdnames)
+			holder_matrix = numpy.zeros((p-len(self.combine_index)+1,len(self.time)),dtype=int)
+			k=0
+			for j in range(p):
+				if j in self.combine_index:
+					holder_matrix[-1]+=Y[j]
+				else:
+					holder_matrix[k] = Y[j]
+					k+=1
+			
+			for j in sorted(self.combine_index,reverse=True):
+				del birdnames[j]
+			
+			birdnames.append('Other Birds')
+			self.birdnames=birdnames
+			self.Y = holder_matrix
 	
 	def get_vector_spline(self,X,Y,sigma,period):
 		multinomial_spline = prob_spline.MultinomialSpline(sigma = sigma,period = period)

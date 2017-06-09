@@ -23,7 +23,7 @@ class HostSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), sample = 0):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), sample = 0, combine_index=[]):
 
 
 
@@ -31,9 +31,19 @@ class HostSpline():
 		assert isinstance(data_file, str), msg
 		
 		self.data_file = data_file
+		self.combine_index=combine_index
 
 		self.read_data()
 		self.X=prob_spline.time_transform(self.time)
+		
+		'''
+		Index here is a list of values correlating to which bird species you want combined
+		An empty list indicates each line in the datafile will be examined independently
+		A list with specified indices will combine those species, and return a matrix with
+		only the non-specified indices, and a final index of the combined species.
+		'''
+
+		
 
 		if hasattr(sigma,"__len__"):
 			for j in sigma:
@@ -52,9 +62,31 @@ class HostSpline():
 	def read_data(self):
 
 		count_data = pd.read_csv(self.data_file,index_col=0)
-		self.birdnames = count_data.index
 		self.time = numpy.array([int(x) for x in count_data.columns])
-		self.Y = count_data.as_matrix()
+		if self.combine_index==[]:		
+			self.birdnames = list(count_data.index)
+			self.Y = count_data.as_matrix()
+		else:
+			birdnames = list(count_data.index)
+			Y = count_data.as_matrix()
+			p=len(birdnames)
+			holder_matrix = numpy.zeros((p-len(self.combine_index)+1,len(self.time)),dtype=int)
+			k=0
+			for j in range(p):
+				if j in self.combine_index:
+					holder_matrix[-1]+=Y[j]
+				else:
+					holder_matrix[k] = Y[j]
+					k+=1
+			
+			for j in sorted(self.combine_index,reverse=True):
+				del birdnames[j]
+			
+			birdnames.append('Other Birds')
+			self.birdnames=birdnames
+			self.Y = holder_matrix
+
+
 		return()
 	
 	def get_host_splines(self,X,Y_mat,sigma,period):
