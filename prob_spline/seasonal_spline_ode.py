@@ -16,9 +16,10 @@ from time import gmtime, strftime
 
 class Seasonal_Spline_ODE():
 
-	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0):
+	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0,eps=.001):
 		self.tstart = tstart
 		self.tend = tend
+		self.eps = eps  # The rate at which birds entering the population enter already infected with EEE
 		if find_beta==1:
 			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
 			self.beta_1=val.x
@@ -33,14 +34,15 @@ class Seasonal_Spline_ODE():
 		bm_rat = bm / numpy.sum(bm)
 		count_rat = counts / numpy.sum(counts)
 		with numpy.errstate(divide="ignore"):
-			alpha = numpy.where(count_rat>10**-5,bm_rat/count_rat,0)
+			#alpha = numpy.where(count_rat>10**-5,bm_rat/count_rat,0)
+			alpha = numpy.where(count_rat>0,bm_rat/count_rat,0)
 			weight = numpy.sum(alpha*counts,axis=0)
 			return(alpha/weight)
 
 	def rhs(self,Y,t, bc_splines, bm_splines, mos_curve):
 		# Consider adding epsilon term , for proportion infected entering population eps = .001
 		p=self.p
-		eps = .001
+		eps = self.eps
 		s=Y[0:p]
 		i=Y[p:2*p]
 		r=Y[2*p:3*p]
@@ -83,8 +85,8 @@ class Seasonal_Spline_ODE():
 		T = scipy.linspace(self.tstart,self.tend,1001)
 		Sv = .99
 		Iv = .01
-		S0 = .99*numpy.ones(self.p)
-		I0 = .01*numpy.ones(self.p)
+		S0 = 1*numpy.ones(self.p)
+		I0 = .00*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
 		C0 = 0
 		E0 = 0
