@@ -27,7 +27,7 @@ bm_splines = pickle.load(open('vectors_splines_sample.pkl', 'rb'))
 mos_curve = pickle.load(open('mos_curve_sample.pkl', 'rb'))
 '''
 
-bc_sigma = pickle.load(open('sigma_vals.pkl','rb'))
+#bc_sigma = pickle.load(open('sigma_vals.pkl','rb'))
 bm_sigma = 0.199
 
 #bc_splines = prob_spline.HostSpline(bc_file,sigma=bc_sigma,sample=1)
@@ -36,7 +36,7 @@ bm_sigma = 0.199
 mos_curve = prob_spline.MosCurve(msq_file,prob_spline.MosConstant,sample=1)
 
 
-bc_splines = pickle.load(open('splines_with_sigma=1.pkl', 'rb'))
+bc_splines = pickle.load(open('corrected_splines_6_13.pkl','rb'))
 bm_splines = pickle.load(open('vectors_splines_single_sample.pkl', 'rb'))
 
 tstart = prob_spline.time_transform(90)
@@ -47,3 +47,9 @@ x = numpy.linspace(tstart,tend,1001)
 ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=65)
 
 #ODE.eval_ode_results()
+
+s,i,r,sv,iv,c,e = ODE.get_SIR_vals(ODE.Y)
+counts = bc_splines(x)
+S = s * counts.T
+I = i * counts.T
+R = r * counts.T

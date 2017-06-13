@@ -65,7 +65,8 @@ class Seasonal_Spline_ODE():
 		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv
 
 		dc = numpy.sum(lambdab*s*N) 		#cumulative infections eq
-		de = numpy.sum(s*N)        			#exposure eq
+		#de = numpy.sum(s*N)        			#exposure eq
+		de = numpy.sum(bc_splines.pos_der(t))		# proposed change
 
 		dY = 365./2*numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
 		return dY
@@ -89,7 +90,7 @@ class Seasonal_Spline_ODE():
 		I0 = .00*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
 		C0 = 0
-		E0 = 0
+		E0 = numpy.sum(bc_splines(self.tstart))
 
 		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv,C0,E0))
 		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),mxstep = 0, full_output=0)
