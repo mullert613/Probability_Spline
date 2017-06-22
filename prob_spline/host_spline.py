@@ -117,13 +117,12 @@ class HostSpline():
 		return(numpy.array([numpy.min((j,0)) for j in self.log_derivative(X)]))
 	
 
-	def plot(self,p=range(7)):
+	def plot(self):
 		'''
 		A function to plot the data and spline fit of the specified species
 		Defaults to all species given, but allows for input of specified species index
 		'''
-		msg = 'p must be a list or array, not at integer'
-		assert hasattr(p, "__len__"), msg
+		p=range(len(self.Y))
 		val = len(p)
 		x = numpy.linspace(numpy.min(self.X), numpy.max(self.X), 1001)
 		grid = numpy.ceil(numpy.sqrt(val))

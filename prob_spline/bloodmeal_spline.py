@@ -56,9 +56,11 @@ class BloodmealSpline():
 		if self.combine_index==[]:		
 			self.birdnames = list(count_data.index)
 			self.Y = count_data.as_matrix()
+			self.p = len(self.birdnames)
 		else:
 			birdnames = list(count_data.index)
 			Y = count_data.as_matrix()
+			self.p = len(birdnames)
 			p=len(birdnames)
 			holder_matrix = numpy.zeros((p-len(self.combine_index)+1,len(self.time)),dtype=int)
 			k=0
@@ -77,9 +79,12 @@ class BloodmealSpline():
 			self.Y = holder_matrix
 	
 	def get_vector_spline(self,X,Y,sigma,period):
-		multinomial_spline = prob_spline.MultinomialSpline(sigma = sigma,period = period)
-		multinomial_spline.fit(X,Y.T)
-		return(multinomial_spline)
+		if len(self.combine_index)==self.p:
+			spline= prob_spline.PoissonSpline(sigma = sigma,period=period)
+		else:
+			spline = prob_spline.MultinomialSpline(sigma = sigma,period = period)
+		spline.fit(X,Y.T)
+		return(spline)
 
 	def evaluate(self,X):			# Evaluate the splines at given values X
 		return(self.splines(X))

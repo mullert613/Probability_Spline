@@ -1,0 +1,38 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\begin{document}
+
+
+Counts ODE		\\
+\begin{align*} 
+dS_j &= \chi_j(t)(1-\epsilon) - \lambda_bS_j - F_j(t)\frac{S_j}{N_j}		\\
+dI_j &= \chi_j(t)\epsilon +\lambda_bS_J - \gamma_bI_j - F_j(t)\frac{I_j}{N_j}		\\
+dR_j &= \gamma_bI_j - F_j(t)\frac{R_j}{N_j}		\\
+\end{align*} 
+
+Where $\epsilon$ is the proportion of incoming birds entering as infected, $\chi_j(t)$ and $F_j(t)$  are the rates of birds enter and leaving (respectively) species j at time t. //
+\begin{align*}
+s &= \frac{S}{N} \\
+i &= \frac{I}{N} \\
+r &= \frac{R}{N} \\
+\end{align*} 
+
+We apply the following variable transform: \\
+
+
+Which yields the following set of differntial equations \\
+\begin{align*}
+ds_j &= \frac{\chi_j(t)(1-\epsilon - s_j)}{N_j} - \lambda_bs_j                   \\	
+di_j &= \frac{\chi_j(t)(\epsilon-i_j)}{N_j} +\lambda_bs_j - \gamma_bi_j   \\
+dr_j &= \gamma_bi_j - \frac{\chi_j(t)r_j}{N_j}		\\
+\end{align*} 
+
+
+\end{document}
+
+
+
+
+
+
+\end{document}

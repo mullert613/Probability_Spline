@@ -9,9 +9,9 @@ import test_common
 import pandas as pd
 import pickle
 
-bc_file = "Days_BirdCounts.csv"
+bc_file = "Test_BirdCounts.csv"
 msq_file = "Vector_Data(NoZeros).csv"
-bm_file = "Days_BloodMeal.csv"
+bm_file = "Test_BloodMeals.csv"
 
 '''
 For running a combined count
@@ -36,15 +36,15 @@ bm_sigma = 0.199
 mos_curve = prob_spline.MosCurve(msq_file,prob_spline.MosConstant,sample=1)
 
 
-bc_splines = pickle.load(open('corrected_splines_6_13.pkl','rb'))
-bm_splines = pickle.load(open('vectors_splines_single_sample.pkl', 'rb'))
+bc_splines = prob_spline.HostSpline(bc_file)
+bm_splines = prob_spline.BloodmealSpline(bm_file)
 
 tstart = prob_spline.time_transform(90)
 tend = prob_spline.time_transform(270)
 x = numpy.linspace(tstart,tend,1001)
 
 
-ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=30)
+ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=1,beta_1=20)
 
 #ODE.eval_ode_results()
 

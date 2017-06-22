@@ -58,6 +58,12 @@ class Seasonal_Spline_ODE():
 		lambdab = self.beta1*self.v*iv*numpy.array(alpha_val)*N_v/denom
 		lambdav = self.v*(numpy.dot(self.beta2*i*N,alpha_val))/denom
 
+		'''
+		Note that bc_splines.pos_der returns the normalized dervivative of the spline, that is
+		the derivative of the spline at the given time, divided by the value of the spline at
+		that given time.
+		'''
+
 		ds = bc_splines.pos_der(t)*(1-eps-s) - lambdab*s
 		di = bc_splines.pos_der(t)*(eps-i) + lambdab*s - self.gammab*i
 		dr = self.gammab*i - r*bc_splines.pos_der(t)
@@ -66,9 +72,17 @@ class Seasonal_Spline_ODE():
 
 		dc = numpy.sum(lambdab*s*N) 		#cumulative infections eq
 		#de = numpy.sum(s*N)        			#exposure eq
-		de = numpy.sum(bc_splines.pos_der(t))		# proposed change
+		de = numpy.sum(bc_splines.pos_der(t)*N)		# proposed change
 
-		dY = 365./2*numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
+		transform_constant = 365./prob_spline.period()
+		ds = transform_constant*ds
+		di = transform_constant*di
+		dr = transform_constant*dr
+		dsv = transform_constant*dsv
+		div = transform_constant*div
+		dc = transform_constant*dc
+
+		dY = numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
 		return dY
 
 	def run_ode(self,beta1,bm_splines,bc_splines,mos_curve):
