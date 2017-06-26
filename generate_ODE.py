@@ -53,3 +53,8 @@ counts = bc_splines(x)
 S = s * counts.T
 I = i * counts.T
 R = r * counts.T
+
+for j in range(7):
+	figure(j)
+	pylab.plot(prob_spline.inv_time_transform(x),c[:,j]/e[:,j])
+	pylab.title(bc_splines.birdnames[j])

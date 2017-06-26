@@ -46,10 +46,10 @@ class Seasonal_Spline_ODE():
 		s=Y[0:p]
 		i=Y[p:2*p]
 		r=Y[2*p:3*p]
-		sv=Y[-4]
-		iv=Y[-3]
-		c = Y[-2]   #cumulative infections
-		e = Y[-1]	#exposure
+		sv=Y[3*p]
+		iv=Y[3*p+1]
+		c = Y[3*p+1:4*p+1]   #cumulative infections
+		e = Y[4*p+1:5*p+1]	#exposure
 
 		alpha_val = self.alpha_calc(bm_splines(t),bc_splines(t))
 		N=bc_splines(t)
@@ -70,9 +70,9 @@ class Seasonal_Spline_ODE():
 		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
 		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv
 
-		dc = numpy.sum(lambdab*s*N) 		#cumulative infections eq
+		dc = lambdab*s*N 		#cumulative infections eq
 		#de = numpy.sum(s*N)        			#exposure eq
-		de = numpy.sum(bc_splines.pos_der(t)*N)		# proposed change
+		de = bc_splines.pos_der(t)*N		# proposed change
 
 		transform_constant = 365./prob_spline.period()
 		ds = transform_constant*ds
@@ -103,8 +103,8 @@ class Seasonal_Spline_ODE():
 		S0 = 1*numpy.ones(self.p)
 		I0 = .00*numpy.ones(self.p)
 		R0 = 0*numpy.ones(self.p)
-		C0 = 0
-		E0 = numpy.sum(bc_splines(self.tstart))
+		C0 = 0*numpy.ones(self.p)
+		E0 = bc_splines(self.tstart)
 
 		Y0 = numpy.hstack((S0, I0, R0, Sv, Iv,C0,E0))
 		Y = scipy.integrate.odeint(self.rhs,Y0,T,args = (bc_splines,bm_splines,mos_curve),mxstep = 0, full_output=0)
@@ -115,10 +115,10 @@ class Seasonal_Spline_ODE():
 		S=Y[:,0:p]
 		I=Y[:,p:2*p]
 		R=Y[:,2*p:3*p]
-		sv=Y[:,-4]
-		iv=Y[:,-3]
-		c = Y[:,-2]
-		e = Y[:,-1]
+		sv=Y[:,3*p]
+		iv=Y[:,3*p+1]
+		c = Y[:,3*p+2:4*p+2]
+		e = Y[:,4*p+2:5*p+2]
 		return(S,I,R,sv,iv,c,e)
 
 	def eval_ode_results(self,alpha=1):	
