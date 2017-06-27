@@ -39,12 +39,14 @@ mos_curve = prob_spline.MosCurve(msq_file,prob_spline.MosConstant,sample=1)
 bc_splines = pickle.load(open('corrected_splines_6_13.pkl','rb'))
 bm_splines = pickle.load(open('vectors_splines_single_sample.pkl', 'rb'))
 
+
+
 tstart = prob_spline.time_transform(90)
 tend = prob_spline.time_transform(270)
 x = numpy.linspace(tstart,tend,1001)
 
 
-ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=30)
+ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=3)
 
 #ODE.eval_ode_results()
 
@@ -54,7 +56,9 @@ S = s * counts.T
 I = i * counts.T
 R = r * counts.T
 
+'''
 for j in range(7):
-	figure(j)
+	pylab.figure(j+4)
 	pylab.plot(prob_spline.inv_time_transform(x),c[:,j]/e[:,j])
 	pylab.title(bc_splines.birdnames[j])
+'''

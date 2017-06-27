@@ -39,12 +39,12 @@ mos_curve = prob_spline.MosCurve(msq_file,prob_spline.MosConstant,sample=1)
 bc_splines = prob_spline.HostSpline(bc_file)
 bm_splines = prob_spline.BloodmealSpline(bm_file)
 
-tstart = prob_spline.time_transform(90)
-tend = prob_spline.time_transform(270)
+tstart = prob_spline.time_transform(98)
+tend = prob_spline.time_transform(301)
 x = numpy.linspace(tstart,tend,1001)
 
 
-ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=1,beta_1=20)
+ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=100)
 
 #ODE.eval_ode_results()
 

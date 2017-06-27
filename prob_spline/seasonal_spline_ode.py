@@ -50,6 +50,8 @@ class Seasonal_Spline_ODE():
 		iv=Y[3*p+1]
 		c = Y[3*p+1:4*p+1]   #cumulative infections
 		e = Y[4*p+1:5*p+1]	#exposure
+		
+		transform_constant = 365./prob_spline.period()
 
 		alpha_val = self.alpha_calc(bm_splines(t),bc_splines(t))
 		N=bc_splines(t)
@@ -64,23 +66,24 @@ class Seasonal_Spline_ODE():
 		that given time.
 		'''
 
-		ds = bc_splines.pos_der(t)*(1-eps-s) - lambdab*s
-		di = bc_splines.pos_der(t)*(eps-i) + lambdab*s - self.gammab*i
-		dr = self.gammab*i - r*bc_splines.pos_der(t)
-		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
-		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv
+		ds = bc_splines.pos_der(t)*(1-eps-s)/transform_constant - lambdab*s
+		di = bc_splines.pos_der(t)*(eps-i)/transform_constant + lambdab*s - self.gammab*i
+		dr = self.gammab*i - r*bc_splines.pos_der(t)/transform_constant
+		dsv = mos_curve.pos_der(t)/transform_constant*iv-lambdav*sv + self.dv*iv  
+		div = lambdav*sv - mos_curve.pos_der(t)*iv/transform_constant - self.dv*iv
 
 		dc = lambdab*s*N 		#cumulative infections eq
 		#de = numpy.sum(s*N)        			#exposure eq
 		de = bc_splines.pos_der(t)*N		# proposed change
 
-		transform_constant = 365./prob_spline.period()
+		
 		ds = transform_constant*ds
 		di = transform_constant*di
 		dr = transform_constant*dr
 		dsv = transform_constant*dsv
 		div = transform_constant*div
 		dc = transform_constant*dc
+		#de = transform_constant*de
 
 		dY = numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
 		return dY
