@@ -19,6 +19,7 @@ class Seasonal_Spline_ODE():
 	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0,eps=.001):
 		self.tstart = tstart
 		self.tend = tend
+		self.time_trans = 365./prob_spline.period()
 		self.eps = eps  # The rate at which birds entering the population enter already infected with EEE
 		if find_beta==1:
 			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
@@ -66,24 +67,16 @@ class Seasonal_Spline_ODE():
 		that given time.
 		'''
 
-		ds = bc_splines.pos_der(t)*(1-eps-s)/transform_constant - lambdab*s
-		di = bc_splines.pos_der(t)*(eps-i)/transform_constant + lambdab*s - self.gammab*i
-		dr = self.gammab*i - r*bc_splines.pos_der(t)/transform_constant
-		dsv = mos_curve.pos_der(t)/transform_constant*iv-lambdav*sv + self.dv*iv  
-		div = lambdav*sv - mos_curve.pos_der(t)*iv/transform_constant - self.dv*iv
+		ds = bc_splines.pos_der(t)*(1-eps-s)/self.time_trans - lambdab*s
+		di = bc_splines.pos_der(t)*(eps-i)/self.time_trans + lambdab*s - self.gammab*i
+		dr = self.gammab*i - r*bc_splines.pos_der(t)/self.time_trans
+		dsv = mos_curve.pos_der(t)/self.time_trans*iv-lambdav*sv + self.dv*iv  
+		div = lambdav*sv - mos_curve.pos_der(t)*iv/self.time_trans - self.dv*iv
 
 		dc = lambdab*s*N 		#cumulative infections eq
 		#de = numpy.sum(s*N)        			#exposure eq
 		de = bc_splines.pos_der(t)*N		# proposed change
 
-		
-		ds = transform_constant*ds
-		di = transform_constant*di
-		dr = transform_constant*dr
-		dsv = transform_constant*dsv
-		div = transform_constant*div
-		dc = transform_constant*dc
-		#de = transform_constant*de
 
 		dY = numpy.hstack((ds,di,dr,dsv,div,dc,de))  # the 365/2 is the rate of change of the time transform
 		return dY
@@ -91,12 +84,12 @@ class Seasonal_Spline_ODE():
 	def run_ode(self,beta1,bm_splines,bc_splines,mos_curve):
 		self.p = len(bm_splines.Y)
 		self.beta2 = 1
-		self.gammab = .1*numpy.ones(self.p)
-		self.v=.14			# Biting Rate of Vectors on Hosts
-		self.b=0			# Bird "Recruitment" Rate
-		self.d=0			# Bird "Death" Rate
-		self.dv=.10			# Mosquito Mortality Rate
-		self.dEEE= 0	
+		self.gammab = .1*numpy.ones(self.p)*self.time_trans
+		self.v=.14*self.time_trans		# Biting Rate of Vectors on Hosts
+		self.b=0*self.time_trans			# Bird "Recruitment" Rate
+		self.d=0*self.time_trans			# Bird "Death" Rate
+		self.dv=.10*self.time_trans			# Mosquito Mortality Rate
+		self.dEEE= 0*self.time_trans	
 		self.beta1= beta1
 		 # Run for ~ 6 Months
 		
@@ -126,7 +119,10 @@ class Seasonal_Spline_ODE():
 
 	def eval_ode_results(self,alpha=1):	
 		import pylab
+		import seaborn
 		self.birdnames = self.bc_splines.birdnames
+		colors = seaborn.color_palette('Dark2')+['black']
+		seaborn.set_palette(colors)
 		name_list = list(self.birdnames)
 		name_list.append('Vector')
 		T = scipy.linspace(self.tstart,self.tend,1001)
@@ -138,12 +134,12 @@ class Seasonal_Spline_ODE():
 		mos_pop = numpy.zeros(len(T))
 		bc = self.bc_splines(T)
 		bm = self.bm_splines(T)
-		alpha_val = self.alpha_calc(self.bm_splines(T),self.bc_splines(T))
+		alpha_val = self.alpha_calc(self.bm_splines(T),self.bc_splines(T))*self.bc_splines(T)
 		mos_pop = self.mos_curve(T)	
 		sym = ['b','g','r','c','m','y','k','--','g--']
 		pylab.figure(1)
 		for k in range(self.p):
-			pylab.plot(prob_spline.inv_time_transform(T),bc[k],sym[k],alpha=alpha)
+			pylab.plot(prob_spline.inv_time_transform(T),bc[k],alpha=alpha)
 		pylab.title("Populations")
 		pylab.legend(name_list)
 		N=s+i+r
@@ -151,7 +147,7 @@ class Seasonal_Spline_ODE():
 		pylab.figure(2)
 		for k in range(self.p):
 			temp=i[:,k]
-			pylab.plot(prob_spline.inv_time_transform(T),temp,sym[k],alpha=alpha)	
+			pylab.plot(prob_spline.inv_time_transform(T),temp,alpha=alpha)	
 		pylab.legend(self.birdnames)
 		pylab.title("Infected Birds")
 		pylab.figure(3)
@@ -165,7 +161,7 @@ class Seasonal_Spline_ODE():
 		print(beta1)
 		Y = self.run_ode(beta1,bm_splines,bc_splines,mos_curve)
 		s,i,r,sv,iv,c,e = self.get_SIR_vals(Y)
-		finalrec = numpy.where(e[-1]>0,c[-1]/e[-1],0)
+		finalrec = numpy.where(numpy.sum(e[-1])>0,numpy.sum(c[-1])/numpy.sum(e[-1]),0)
 		final = finalrec-.13
 		print(numpy.abs(final))
 		return numpy.abs(final)

@@ -46,7 +46,7 @@ tend = prob_spline.time_transform(270)
 x = numpy.linspace(tstart,tend,1001)
 
 
-ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=3)
+ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=4.75)
 
 #ODE.eval_ode_results()
 
