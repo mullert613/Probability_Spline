@@ -67,11 +67,11 @@ class Seasonal_Spline_ODE():
 		that given time.
 		'''
 
-		ds = bc_splines.pos_der(t)*(1-eps-s)/self.time_trans - lambdab*s
-		di = bc_splines.pos_der(t)*(eps-i)/self.time_trans + lambdab*s - self.gammab*i
-		dr = self.gammab*i - r*bc_splines.pos_der(t)/self.time_trans
-		dsv = mos_curve.pos_der(t)/self.time_trans*iv-lambdav*sv + self.dv*iv  
-		div = lambdav*sv - mos_curve.pos_der(t)*iv/self.time_trans - self.dv*iv
+		ds = bc_splines.pos_der(t)*(1-eps-s) - lambdab*s
+		di = bc_splines.pos_der(t)*(eps-i) + lambdab*s - self.gammab*i
+		dr = self.gammab*i - r*bc_splines.pos_der(t)
+		dsv = mos_curve.pos_der(t)*iv-lambdav*sv + self.dv*iv  
+		div = lambdav*sv - mos_curve.pos_der(t)*iv - self.dv*iv
 
 		dc = lambdab*s*N 		#cumulative infections eq
 		#de = numpy.sum(s*N)        			#exposure eq
