@@ -33,11 +33,11 @@ bm_sigma = 0.199
 #bc_splines = prob_spline.HostSpline(bc_file,sigma=bc_sigma,sample=1)
 #bm_splines = prob_spline.BloodmealSpline(bm_file,sigma=bm_sigma,sample=1)
 
+
 mos_curve = prob_spline.MosCurve(msq_file,prob_spline.MosConstant,sample=1)
 
-
-bc_splines = pickle.load(open('corrected_splines_6_13.pkl','rb'))
-bm_splines = pickle.load(open('vectors_splines_single_sample.pkl', 'rb'))
+bc_splines = pickle.load(open('host_splines_sample_combine_index=[6].pkl','rb'))
+bm_splines = pickle.load(open('vectors_splines_sample_combine_index=[6].pkl', 'rb'))
 
 
 
@@ -46,7 +46,7 @@ tend = prob_spline.time_transform(270)
 x = numpy.linspace(tstart,tend,1001)
 
 
-ODE = prob_spline.Seasonal_Spline_ODE(bc_splines,bm_splines,mos_curve,tstart,tend,find_beta=0,beta_1=4.75)
+ODE = prob_spline.Seasonal_Spline_ODE(bc_splines[0],bm_splines[0],mos_curve,tstart,tend,find_beta=1,beta_1=69.7)
 
 #ODE.eval_ode_results()
 
