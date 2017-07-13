@@ -8,9 +8,11 @@ import prob_spline
 import test_common
 import pandas as pd
 import pickle
+import joblib
+from time import gmtime, strftimee
 
 def generate_ODE(bc_splines,bm_splines,mos_curve,tstart,tend):
-	ODE = prob_spline.Seasonal_Spline_ODE(bc_splines[0],bm_splines[0],mos_curve,tstart,tend,find_beta=1,beta_1=10)
+	ODE = prob_spline.Seasonal_Spline_ODE(bc_splines[0],bm_splines[0],mos_curve,tstart,tend,find_beta=1,beta_1=68)
 	beta_val = ODE.beta1
 	N = len(bc_splines)
 	print('Start Time')
