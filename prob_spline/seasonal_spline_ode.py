@@ -22,7 +22,7 @@ class Seasonal_Spline_ODE():
 		self.time_trans = 365./prob_spline.period()
 		self.eps = eps  # The rate at which birds entering the population enter already infected with EEE
 		if find_beta==1:
-			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method='COBYLA',options={"disp":True})
 			self.beta_1=val.x
 		else:
 			self.beta_1 = beta_1
