@@ -23,8 +23,9 @@ class HostSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), sample = 0, combine_index=[]):
-
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(), sample = 0, combine_index=[],seed=None):
+		if seed is not None:
+			numpy.random.seed(seed)
 
 
 		msg = 'datafile must be a string'

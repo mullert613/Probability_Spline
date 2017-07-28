@@ -16,14 +16,15 @@ from time import gmtime, strftime
 
 class Seasonal_Spline_ODE():
 
-	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0,eps=.001):
+	def __init__(self, bc_splines, bm_splines, mos_curve,tstart,tend,beta_1=1,find_beta=0,eps=.001,counter=0):
 		self.tstart = tstart
 		self.tend = tend
 		self.time_trans = 365./prob_spline.period()
 		self.eps = eps  # The rate at which birds entering the population enter already infected with EEE
 		if find_beta==1:
-			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method="COBYLA",bounds=[(0,1)],options={"disp":True,"iprint":2,"rhobeg":.25})
+			val = scipy.optimize.minimize(self.findbeta,beta_1,args=(bm_splines,bc_splines,mos_curve),method='COBYLA',options={"disp":False})
 			self.beta_1=val.x
+			print(counter)
 		else:
 			self.beta_1 = beta_1
 		self.bc_splines = bc_splines
@@ -163,7 +164,7 @@ class Seasonal_Spline_ODE():
 		s,i,r,sv,iv,c,e = self.get_SIR_vals(Y)
 		finalrec = numpy.where(numpy.sum(e[-1])>0,numpy.sum(c[-1])/numpy.sum(e[-1]),0)
 		final = finalrec-.13
-		print(numpy.abs(final))
+		#print(numpy.abs(final))
 		return numpy.abs(final)
 
 			
