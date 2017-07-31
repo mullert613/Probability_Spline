@@ -6,7 +6,7 @@ import pickle
 
 import prob_spline
 import test_common
-import pandas as pd
+import pandas
 import pickle
 import joblib
 from time import gmtime, strftime
