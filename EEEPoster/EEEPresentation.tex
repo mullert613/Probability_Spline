@@ -1,0 +1,280 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[]{Modeling the Dynamics of Vector-Host Interaction of Eastern Equine Encephalitis} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author[Tim Muller]{\emph{Timothy Muller} \\ Goudarz Molaei, Jan Medlock}
+% Your name
+\institute[ORST] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Oregon State University \\ % Your institution for the title page
+\medskip
+\textit{mullert@onid.orst.edu} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+%\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+%\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+%\section{First Section} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Eastern Equine Encephalitis (EEE)}
+\begin{itemize}
+\item EEE virus (Togaviridae, Alphavirus) is a highly pathogenic mosquito-borne zoonosis that is responsible for outbreaks of severe disease in humans and equines, resulting in high mortality or severe neurological impairment in most survivors.
+\item In the past outbreaks occurred intermittently with no apparent pattern; however, during the last decade we have witnessed annual reoccurrence of virus activity with human and equine cases
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Vectors and Hosts}
+\begin{block}{}
+In the northeastern United States, EEE is maintained in an enzootic cycle involving the ornithophilic mosquito, \textit{Culiseta melanura} and a variety of passerine birds in freshwater swamp habitats. \\
+It is believed that the various passerine bird hosts allows the disease to overwinter and survive despite a relative lack of mosquito presence
+\end{block}
+\end{frame}
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Data Collection 1}
+\begin{block}{}
+Over a period of several months, the Connecticut Agricultural Experiment Station (CAES) both collected samples of \textit{Culiseta melanura} and tracked the appearance of various bird species in set locations
+\begin{center}
+\includegraphics[width=0.35\linewidth]{EEESitefig}
+\end{center}
+\end{block}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Data Collection 2}
+\begin{itemize}
+\item 1127 blood meals were successfully collected and identified to species level
+\item Greater than 99 percent were from 65 avian hosts in 27 families and 11 orders
+\item Examination of the blood meals leads us to emphasize our analysis on 8  bird species
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SIR Model}
+\begin{block}{}
+We choose to focus on 8 preferential host species, and a ninth consisting of all other birds.  This leaves us with a system of 29 differential equations. \\
+$\frac{dS_i}{dt} = \textit{b}N_i - \lambda_bS_i - \textit{d}S_i$ \\
+$\frac{dI_i}{dt} =  \lambda_bS_i -  \gamma_bI_i-d_{EEE}I_i - \textit{d}I_i$ \\
+$\frac{dR_i}{dt} = \gamma_bI_i - \textit{d}R_i$ \\
+$\frac{dI_v}{dt} = \lambda_vS_v - d_vI_v$ \\
+$\frac{dS_v}{dt} = r(t)N_v - I_v$ \\
+$\lambda_b = \frac{\beta_1vI_v\sum\alpha_i}{\sum\alpha_iN_i}$ \\
+$\lambda_v = \frac{\beta_2v\sum\alpha_II_i}{\sum\alpha_iN_i}$ \\
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulation Assumptions}
+\begin{block}{}
+Due to limited experimental data on the subject, the following were assumed to be fixed for the purposes of the model:
+\begin{itemize}
+\item Bird recruitment rate, $\textit{b}$ and bird death rate $\textit{d}$ 
+\item Recovery rate $\gamma$ is assumed to be constant amongst all bird species
+\item Mosquito death rate $d_v$ and vector biting rate \textit{v} 
+\end{itemize}
+Furthermore studies suggest that infection of a susceptible vector is guaranteed if they feed from of a viremic host, and thus the host-vector transmission rate $\beta_2$ is also fixed
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulation Assumptions 2}
+\begin{block}{}
+We also assumed an initial starting infected population of .1 percent of the total population, and that bird populations remained stable over the duration of the infection
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameter Estimation}
+\begin{block}{Feeding Index $\alpha$}
+The feeding index $\alpha_i$ assesses the proportion of blood meals from a particular host species i in relation to the proportional abundance of that species in the host community.  Hence a feeding index of 1 indicates opportunistic feeding habits, while a feeding index greater than 1 indicates preferential feeding. \\
+\begin{center}
+\huge $f_i= \frac{\alpha_iN_i}{\sum\limits_{j=1}^n\alpha_jN_j}$ 
+\end{center}
+Where $f_i$ is the probability that a blood meal was obtained from a specific bird
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameter Estimation 2}
+\begin{block}{Transmission rate $\beta_1$}
+Little data exists to establish Vector-Host transmission rate between the varieties of bird species. \\
+In order to establish this transmission rate, serological data for various bird species during an outbreak was used, and a least-squares optimization program was utilized to estimate $\beta_1$
+\end{block}
+\end{frame}
+
+\begin{frame}{Markov Chain Monte Carlo}
+\begin{itemize}
+\item Utilizing Markov chain Monte Carlo methods, 1000 samples were selected for both the counts and blood meals.
+\item From each of these samples, the feeding indices for each of the selected bird species were calculated
+\item We have reported the median and 95\% confidences intervals for the calculated proportion infected for each host species. 
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Results}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{results}
+\end{center}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Conclusions and Future Work}
+\frametitle{Conclusions}
+Due to their low overall populations and high feeding index, the wood thrush and warbling vireo quickly have populations become highly infectious, which is then followed by a decline as there remain few susceptible birds of these species to infect.  As a result of this, however, the number of infectious mosquito's rises drastically, and thus the infection rates of the remaining bird species slowly increases.
+\end{frame}
+
+\begin{frame}{Future Questions}
+\begin{itemize}
+\item For the purposes of this model bird populations were assumed to be constant over the course of the infection, data exists suggesting that at least certain bird species in the area shift over the course of the summer, which we are currently in the process of implementing.
+\item The Wood Thrush had a relatively small population appear at each location, but in three locations it had a disproportionately high blood meal count, leading to an extremely high feeding index. 
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Komar 1999]{p1} Nicholas Komar, David J. Dohm, MIchael J. Turell, and Andrew Speilman (1999)
+\newblock Eastern Equine Encephalitis Virus in Birds: Relative Competence of European Starlings (Sturnus Vulgaris)
+\newblock \emph{Am. J. Trop. Med Hyg.} 60(3). pg 387-391
+\bibitem[Vaidyanathan 1997]{p2} R. Vaidyanathan, J. D. Edman, L. A. Cooper, and T. W. Scott (1997)
+\newblock Vector Competence of Mosquitoes (Diptera:Culicidae) from Massachusetts for a Sympatric Isolate of Eastern Equine Encephalomyelitis Virus
+\newblock \emph{J. Med. Entomol.} 34(3), 346-352
+\bibitem[Mclean 1995]{p3} Robert G. McLean, Wayne J. Crans, Donald F. Caccamise, James McNelly, Larry J. Kirk, Carl J. Mitchell, and Charles H. Calisher
+\newblock Experimental Infection of Wading Birds with Weastern Equine Encephalitis Virus
+\newblock \emph{Journal of Wildlife Diseases}, 31(4) pp. 502-508
+\bibitem[Howard 2004] John J. Howard, Joanne Oliver, and Margaret A. Grayson
+\newblock Antibody Response of Wild Birds to Natrual Infection with Alphaviruses
+\newblock \emph{J. Med. Entomol.}, 41(6): 1090-1103
+
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
