@@ -1,5 +1,2 @@
 __pycache__/
-host_splines_sample_index=[1, 2, 3, 6].pkl
-host_splines_sample_index=[1, 2, 3, 6].pkl
-sampled_ODE_combined_index=[6].pkl
-corrected_ODE_sampled_combined_index=[6].pkl
+*.pkl
