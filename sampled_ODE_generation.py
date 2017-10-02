@@ -40,7 +40,7 @@ tend   = prob_spline.time_transform(270)
 x      = numpy.linspace(tstart,tend,1001) 
 
 ODE = generate_ODE(bc_splines,bm_splines,mos_curve,tstart,tend)
-with open('sampled_ODE_combined_inde[6].pkl','wb') as output:
+with open('sampled_ODE_combined_index[6].pkl','wb') as output:
 	pickle.dump(ODE,output)
 s_vals=[]
 i_vals=[]

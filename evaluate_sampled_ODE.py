@@ -3,7 +3,9 @@ import numpy
 import scipy.stats as st
 import seaborn
 import pickle
+from matplotlib.ticker import MultipleLocator
 
+import pylab
 import prob_spline
 import test_common
 import pandas
@@ -43,7 +45,9 @@ def get_confidence_interval(vals,alpha=.95,method='numpy'):
 	return(lower,mean,upper)
 
 
+#file_name = 'sampled_ODE_combined_index=[3, 6].pkl'
 file_name = 'corrected_ODE_sampled_combined_index=[6].pkl'
+#file_name = 'sampled_ODE_combined_index=[3, 6].pkl'
 
 ODE = pickle.load(open(file_name,'rb'))
 
@@ -65,19 +69,33 @@ seaborn.set_palette(colors)
 
 fig=pylab.plt.figure(1,figsize=(7.5,3.75))
 for j in range(len(birdnames)):
-	ax=pylab.subplot(3,3,j+1)
+	ax=pylab.subplot(numpy.ceil(len(birdnames)/3),3,j+1)
 	ax.yaxis.set_major_locator(MultipleLocator(.1))
 	ax.yaxis.set_tick_params(labelsize=8)
 	ax.xaxis.set_tick_params(labelsize=8)
 	ax.xaxis.set_major_locator(MultipleLocator(30))
-	pylab.ylim((0,numpy.max((0.5,numpy.max(i_upp[:,j])))))
 	pylab.plot(x,i_low[:,j],color=colors[j])
 	pylab.plot(x,i_mean[:,j],color=colors[j])
 	pylab.plot(x,i_upp[:,j],color=colors[j])
 	pylab.ylim((0,1))
 	pylab.fill_between(x,i_low[:,j],i_upp[:,j],color=colors[j],alpha=.5)
-	pylab.title('%s Proportion Infected' %birdnames[j])
-
+	pylab.title(birdnames[j],fontsize=15)
+	if j%3==0:
+		vals = ax.get_yticks()
+		ax.set_yticklabels(['{:3.0f}%'.format(x*100) for x in vals])
+	if j==3:
+		pylab.ylabel('Proportion Infected',fontsize=14)
+	if j%3==1:
+		ax.yaxis.set_visible(False)
+	if j%3==2:
+		vals = ax.get_yticks()
+		ax.set_yticklabels(['{:3.0f}%'.format(x*100) for x in vals])
+		ax.yaxis.tick_right()
+	if j<4:
+		ax.xaxis.set_visible(False)
+	if j==6:
+		pylab.xlabel('Time (Days)',fontsize=14)
+fig.tight_layout()
 
 fig=pylab.plt.figure(2,figsize=(7.5,3.75))
 
@@ -88,16 +106,28 @@ for j in range(len(birdnames)):
 	pylab.plot(x,count_mean[j,:],color=colors[j],label=birdnames[j])
 	#pylab.plot(x,count_upp[j,:],color=colors[j])
 	pylab.fill_between(x,count_low[j,:].T,count_upp[j,:],color=colors[j],alpha=.5)
-	pylab.title('%s Observed Populations' %birdnames[j])
+	pylab.ylabel('Number of Hosts',fontsize=14)
+	pylab.xlabel('Time (Days)', fontsize=14)
+	pylab.title('Host Populations')
 pylab.legend()
+fig.tight_layout
 
 fig=pylab.plt.figure(3,figsize=(7.5,3.75))
-pylab.subplot(1,2,1)
+ax=pylab.subplot(1,2,1)
+pylab.ylim(0,1)
+pylab.xlim(90,270)
 pylab.stackplot(x,alpha_mean,colors=colors)
-pylab.subplot(1,2,2)
+vals = ax.get_yticks()
+ax.set_yticklabels(['{:3.0f}%'.format(x*100) for x in vals])
+pylab.xlabel('Time (Days)', fontsize=14)
+pylab.title('Feeding Preference', fontsize=15)
+ax=pylab.subplot(1,2,2)
+pylab.ylim(0,1)
+pylab.xlim(90,270)
+ax.yaxis.tick_right()
 pylab.stackplot(x,count_mean/numpy.sum(count_mean,axis=0),colors=colors)
-
-
+pylab.title('Population', fontsize = 15)
+pylab.legend(birdnames,frameon=1)
 
 
 

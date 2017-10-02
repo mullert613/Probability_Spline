@@ -1,4 +1,4 @@
-\documentclass[portrait]{sciposter}
+\documentclass[landscape]{sciposter}
 
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -59,7 +59,7 @@ and Goudarz Molaei\footnotemark[2], Michael C. Thomas\footnotemark[2], John J. S
 \maketitle
 
 
-\begin{multicols}{2}
+\begin{multicols}{3}
 
   \section*{Introduction}
   \subsection*{Eastern Equine Encephalitis (EEE)}
@@ -76,45 +76,34 @@ and Goudarz Molaei\footnotemark[2], Michael C. Thomas\footnotemark[2], John J. S
 \section*{Data Collection}
 \begin{itemize}
 \item Over a period of several months, the Connecticut Agricultural Experiment Station (CAES) both collected samples of \textit{Culiseta melanura} and tracked the appearance of various bird species in set locations
-\begin{center}
-\includegraphics[width=.25\linewidth]{figs/EEESitefig}
-\end{center}
 \item 1127 blood meals were successfully collected and identified to species level
 \item Greater than 99 percent were from 65 avian hosts in 27 families and 11 orders
 \item Examination of the blood meals leads us to emphasize our analysis on 8  bird species
 \end{itemize}
 
-\section*{Parameters and Assumptions}
-\subsection*{Feeding Index $\alpha$}
+\section*{Feeding Index $\alpha$}
 The feeding index $\alpha_i$ assesses the proportion of blood meals from a particular host species i in relation to the proportional abundance of that species in the host community.  Hence a feeding index of 1 indicates opportunistic feeding habits, while a feeding index greater than 1 indicates preferential feeding. \\
 \begin{center}
-\huge $\alpha_i= \frac{\frac{f_i}{\sum\limits_{j=1}^nf_j}}{\frac{N_i}{\sum\limits_{j=1}^nN_j}}$ 
+$\alpha_i= \frac{\frac{f_i}{\sum\limits_{j=1}^nf_j}}{\frac{N_i}{\sum\limits_{j=1}^nN_j}}$ 
 \end{center}
 Where $f_i$ is the number of blood meals obtained from a specific bird
 
-\subsection*{Fixed Parameters}
-Due to limited experimental data on the subject, the following were assumed to be fixed for the purposes of the model:
-\begin{itemize}
-\item Bird recruitment rate, $\textit{b}$ and bird death rate $\textit{d}$ 
-\item Recovery rate $\gamma$ is assumed to be constant amongst all bird species
-\item Mosquito death rate $d_v$ and vector biting rate \textit{v} 
-\end{itemize}
-Furthermore studies suggest that infection of a susceptible vector is guaranteed if they feed from of a viremic host, and thus the host-vector transmission rate $\beta_2$ is also fixed
-
-\subsection*{Transmission Rates $\beta_i$}
-\begin{itemize}
-\item Studies suggest that vector-to-host transmission is guaranteed when an infectious vector feeds
-from a host, and thus the vector-to-host transmission rate was set to 1. 
-\item Limited data exists regarding the value of the host-to-vector transmission rate among the various host species. In
-order to focus the analysis on the effect of variable biting rates on the model's output, the host-to-vector
-transmission rate is assumed to be constant across all of the host species
-\item The all-species host-to-vector transmission rate was determined by fitting the model proportion of birds that
-became infected over the model period to the observed proportion of seropositives amongst the
-various bird species from a previous study. 
-\end{itemize}
-
 \columnbreak
+\section*{Population Splines}
+Interpolating Splines were used to create smooth curves of the sampled host populations \\
+\begin{center}
+\includegraphics[width=\linewidth]{Populations}
+\end{center}
+
+
+\section*{Observed Feeding Preference}
+Utilizing the population splines and calculated feeding indicies, we are able to see the observed feeding preference of the vector. \\
+\begin{center}
+\includegraphics[width=\linewidth]{FeedingPreference}
+\end{center}
  
+\columnbreak
+
  \section*{Mathematical Model}
 We choose to focus on 6 preferential host species, and a seventh consisting of all other birds.  This leaves us with a system of 23 differential equations (with i=1,2,...,9). \\
 \begin{align*}
@@ -127,21 +116,11 @@ We choose to focus on 6 preferential host species, and a seventh consisting of a
 \frac{dS_v}{dt} &= r(t)N_v - d_vI_v&
 \end{align*}
 
-\section*{Interpolation Splines}
-\begin{itemize}
-\item Utilizing Markov chain Monte Carlo methods, 1000 samples were selected for both the counts and blood meals.
-\item From each of these samples, the feeding indices for each of the selected bird species were calculated
-\item We have reported the median and 95\% confidences intervals for the calculated proportion infected for each host species. 
-\end{itemize}
-
 \section*{Results}
 \includegraphics[width=\linewidth]{Results}
 
-\section*{Conclusions and Future Work}
-\subsection*{Conclusions}.
-
-\subsection*{Future Questions}
-\begin{itemize}
+\section*{Conclusions}
+Early in the season, the disease persists due to infections from preferntial species such as the Common Grackle and Amerian Robin.  Due to a increased feeding preference for Wood Thrush later in the season, in conjucture with the small overall population of Wood Thrush, lead to the population to quickly become infected.  This spike in new infections leads to an increase in in infections across all other species. 
 
 \subsection*{Funding}
 Funded in part by NIH U01 GM070694

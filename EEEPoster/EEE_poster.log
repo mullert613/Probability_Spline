@@ -1,7 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.11.20)  31 MAY 2016 13:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.11.20)  4 AUG 2017 08:01
 entering extended mode
-**C:/Users/mullert/Desktop/EEEPoster/EEE_poster.tex
-(C:/Users/mullert/Desktop/EEEPoster/EEE_poster.tex
+**C:/Users/mullert/Desktop/prob_spline/Probability_Spline/EEEPoster/EEE_poster.
+tex
+
+(C:/Users/mullert/Desktop/prob_spline/Probability_Spline/EEEPoster/EEE_poster.t
+ex
 LaTeX2e <2015/01/01> patch level 2
 Babel <3.9m> and hyphenation patterns for 69 languages loaded.
 (C:\Users\mullert\AppData\Roaming\MiKTeX\2.9\tex\latex\sciposter\sciposter.cls
@@ -59,6 +62,7 @@ Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 Loading lettrine.cfg
 (C:\Users\mullert\AppData\Roaming\MiKTeX\2.9\tex\latex\lettrine\lettrine.cfg))
 \papermargin=\skip43
+\tempsize=\skip44
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
 Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
@@ -114,24 +118,24 @@ Package: times 2005/04/12 PSNFSS-v9.2a (SPQR)
 )
 (C:\Users\mullert\AppData\Roaming\MiKTeX\2.9\tex\latex\boxedminipage\boxedminip
 age.sty)
-\titlewidth=\skip44
-\logowidth=\skip45
-\parstartskip=\skip46
-\figtopskip=\skip47
-\figbotskip=\skip48
-\secskip=\skip49
-\titleskip=\skip50
-\secboxwidth=\skip51
+\titlewidth=\skip45
+\logowidth=\skip46
+\parstartskip=\skip47
+\figtopskip=\skip48
+\figbotskip=\skip49
+\secskip=\skip50
+\titleskip=\skip51
+\secboxwidth=\skip52
 \c@subfig=\count92
 \c@algorithm=\count93
-\secrulewidth=\skip52
+\secrulewidth=\skip53
 ) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
 ) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
 Package: amsmath 2013/01/14 v2.14 AMS math features
-\@mathmargin=\skip53
+\@mathmargin=\skip54
 
 For additional information on amsmath, use the `?' option.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
@@ -181,8 +185,8 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \totwidth@=\dimen135
 \lineht@=\dimen136
 \@envbody=\toks18
-\multlinegap=\skip54
-\multlinetaggap=\skip55
+\multlinegap=\skip55
+\multlinetaggap=\skip56
 \mathdisplay@stack=\toks19
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
@@ -201,8 +205,8 @@ Package: multicol 2015/03/31 v1.8m multicolumn formatting (FMi)
 \page@free=\dimen139
 \premulticols=\dimen140
 \postmulticols=\dimen141
-\multicolsep=\skip56
-\multicolbaselineskip=\skip57
+\multicolsep=\skip57
+\multicolbaselineskip=\skip58
 \partial@page=\box32
 \last@line=\box33
 \maxbalancingoverflow=\dimen142
@@ -312,65 +316,75 @@ Underfull \hbox (badness 10000) in paragraph at lines 72--73
 
  []
 
-<figs/EEESitefig.jpg, id=2, 493.6041pt x 664.1613pt>
-File: figs/EEESitefig.jpg Graphic file (type jpg)
- <use figs/EEESitefig.jpg>
-Package pdftex.def Info: figs/EEESitefig.jpg used on input line 80.
-(pdftex.def)             Requested size: 246.41327pt x 331.56299pt.
 
-
-LaTeX Font Warning: Font shape `OMX/cmex/m/n' in size <29.86> not available
-(Font)              size <24.88> substituted on input line 88.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
 
  []
 
 
-LaTeX Font Warning: Font shape `OMX/cmex/m/n' in size <51.6> not available
-(Font)              size <24.88> substituted on input line 91.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 119--120
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 
  []
 
-<Results.jpg, id=3, 542.025pt x 271.0125pt>
+<Populations.jpg, id=2, 1713.40125pt x 816.04875pt>
+File: Populations.jpg Graphic file (type jpg)
+ <use Populations.jpg>
+Package pdftex.def Info: Populations.jpg used on input line 95.
+(pdftex.def)             Requested size: 977.4125pt x 465.51373pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
+
+ []
+
+<FeedingPreference.jpg, id=3, 1713.40125pt x 816.04875pt>
+File: FeedingPreference.jpg Graphic file (type jpg)
+
+<use FeedingPreference.jpg>
+Package pdftex.def Info: FeedingPreference.jpg used on input line 102.
+(pdftex.def)             Requested size: 977.4125pt x 465.51373pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--109
+
+ []
+
+<Results.jpg, id=4, 1713.40125pt x 816.04875pt>
 File: Results.jpg Graphic file (type jpg)
  <use Results.jpg>
-Package pdftex.def Info: Results.jpg used on input line 138.
-(pdftex.def)             Requested size: 1010.6531pt x 505.34756pt.
+Package pdftex.def Info: Results.jpg used on input line 120.
+(pdftex.def)             Requested size: 977.4125pt x 465.51373pt.
  [1
 
 {C:/Users/mullert/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./graphic
-s/Vertical-spot.pdf> <./figs/EEESitefig.jpg> <./Results.jpg>] (EEE_poster.aux)
+s/Vertical-spot.pdf> <./Populations.jpg> <./FeedingPreference.jpg> <./Results.j
+pg>]
+(EEE_poster.aux)
 
 LaTeX Font Warning: Size substitutions with differences
-(Font)              up to 26.72pt have occurred.
+(Font)              up to 18.12pt have occurred.
 
  ) 
 Here is how much of TeX's memory you used:
- 2413 strings out of 493673
- 34695 string characters out of 3141523
- 151627 words of memory out of 3000000
- 5728 multiletter control sequences out of 15000+200000
- 32187 words of font info for 69 fonts, out of 3000000 for 9000
+ 2408 strings out of 493673
+ 34738 string characters out of 3141523
+ 126424 words of memory out of 3000000
+ 5723 multiletter control sequences out of 15000+200000
+ 29753 words of font info for 62 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 30i,10n,22p,464b,335s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 30i,10n,22p,500b,335s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files (x86)/MiKT
-eX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
-onts/type1/urw/helvetic/uhvbo8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
-helvetic/uhvro8a.pfb>
-Output written on EEE_poster.pdf (1 page, 3355862 bytes).
+les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
+s/type1/urw/helvetic/uhvbo8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
+/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/hel
+vetic/uhvro8a.pfb>
+Output written on EEE_poster.pdf (1 page, 529267 bytes).
 PDF statistics:
- 50 PDF objects out of 1000 (max. 8388607)
+ 55 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
