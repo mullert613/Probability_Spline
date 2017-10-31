@@ -35,37 +35,41 @@ def ODE_test(bc,bm,mos,beta,tstart,tend):
 	val = prob_spline.Seasonal_Spline_ODE(bc[j],bm[j],mos[j],tstart,tend,beta_1 = beta[j])
 	return(val)
 
+def generate_comparison_ODE(combine_index):
 
-bc_splines = pickle.load(open('host_splines_sample_combine_index=[3, 6].pkl','rb'))
-bm_splines = pickle.load(open('vectors_splines_sample_combine_index=[3, 6].pkl','rb'))
-mos_curve  = pickle.load(open('mos_curve_sample.pkl','rb'))
-tstart = prob_spline.time_transform(90)
-tend   = prob_spline.time_transform(270)
-x      = numpy.linspace(tstart,tend,1001) 
+	bc_splines = pickle.load(open('host_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
+	bm_splines = pickle.load(open('vectors_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
+	mos_curve  = pickle.load(open('mos_curve_sample.pkl','rb'))
+	tstart = prob_spline.time_transform(90)
+	tend   = prob_spline.time_transform(270)
+	x      = numpy.linspace(tstart,tend,1001) 
 
-previous_ODE = pickle.load(open('corrected_ODE_sampled_combined_index=[6].pkl','rb'))
-beta1_samples = numpy.array([previous_ODE[j].beta1 for j in range(len(previous_ODE))])
+	previous_ODE = pickle.load(open('corrected_ODE_sampled_combined_index=[6].pkl','rb'))
+	beta1_samples = numpy.array([previous_ODE[j].beta1 for j in range(len(previous_ODE))])
 
-# This following beta1 generation should be thought about more closely
-beta1_vals = numpy.random.choice(beta1_samples,len(bc_splines))
+	# This following beta1 generation should be thought about more closely
+	beta1_vals = numpy.random.choice(beta1_samples,len(bc_splines))
 
-ODE = generate_ODE(bc_splines,bm_splines,mos_curve,beta1_vals,tstart,tend)
-with open('sampled_comparison_ODE_combined_index[3, 6].pkl','wb') as output:
-	pickle.dump(ODE,output)
-_vals=[]
-i_vals=[]
-r_vals==[]
-sv_vals==[]
-iv_vals==[]
-c_vals==[]
-e_vals==[]
-for j in range(len(ODE)):
-	s,i,r,sv,iv,c,e = ODE[j].get_SIR_vals(ODE[j].Y)
-	s_vals.append(s)
-	i_vals.append(i)
-	r_vals.append(r)
-	sv_vals.append(sv)
-	iv_vals.append(iv)
-	c_vals.append(c)
-	e_vals.append(e)s
+	ODE = generate_ODE(bc_splines,bm_splines,mos_curve,beta1_vals,tstart,tend)
+	with open('sampled_comparison_ODE_combined_index%s.pkl' %combine_index,'wb') as output:
+		pickle.dump(ODE,output)
+	'''
+	s_vals=[]
+	i_vals=[]
+	r_vals==[]
+	sv_vals==[]
+	iv_vals==[]
+	c_vals==[]
+	e_vals==[]
+	for j in range(len(ODE)):
+		s,i,r,sv,iv,c,e = ODE[j].get_SIR_vals(ODE[j].Y)
+		s_vals.append(s)
+		i_vals.append(i)
+		r_vals.append(r)
+		sv_vals.append(sv)
+		iv_vals.append(iv)
+		c_vals.append(c)
+		e_vals.append(e)
+	'''
+	return()
 
