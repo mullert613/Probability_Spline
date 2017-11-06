@@ -69,8 +69,11 @@ f_1 = 'sampled_ODE_combined_index=[3, 6].pkl'
 f_2 = 'corrected_ODE_sampled_combined_index=[6].pkl'
 f_3 = 'updated_ sampled_comparison_ODE_combined_index[3, 6].pkl'
 
-def evaluate_sampled_ODE(index):
-	file_name = generate_file_name(index)
+def evaluate_sampled_ODE(index,generate=1):
+	if generate==0:
+		file_name = index
+	else:
+		file_name = generate_file_name(index)
 	ODE = pickle.load(open(file_name,'rb'))
 
 	x = prob_spline.inv_time_transform(numpy.linspace(ODE[0].tstart,ODE[0].tend,1001))

@@ -24,7 +24,7 @@ class BloodmealSpline():
 	'''
 
 
-	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),sample=0,combine_index=[],seed=None):
+	def __init__(self, data_file, sigma = 0, period=prob_spline.period(),sample=0,combine_index=[],remove_index=[],seed=None):
 		if seed is not None:
 			numpy.random.seed(seed)
 			
@@ -33,6 +33,11 @@ class BloodmealSpline():
 		msg = 'datafile must be a string'
 		assert isinstance(data_file, str), msg
 		
+		msg = 'combine_index and remove_index cannot both be non-empty'
+		if combine_index!=[] and remove_index!=[]:
+			assert False, msg
+
+		self.remove_index=remove_index
 		self.combine_index=combine_index
 		self.read_data()
 
@@ -55,11 +60,11 @@ class BloodmealSpline():
 
 		count_data = pd.read_csv(self.data_file,index_col=0)
 		self.time = numpy.array([int(x) for x in count_data.columns])
-		if self.combine_index==[]:		
+		if self.combine_index==[] and self.remove_index==[]:		
 			self.birdnames = list(count_data.index)
 			self.Y = count_data.as_matrix()
 			self.p = len(self.birdnames)
-		else:
+		elif self.combined_index!=[]:
 			birdnames = list(count_data.index)
 			Y = count_data.as_matrix()
 			self.p = len(birdnames)
@@ -79,6 +84,13 @@ class BloodmealSpline():
 			birdnames.append('Other Birds')
 			self.birdnames=birdnames
 			self.Y = holder_matrix
+		else:
+			data = count_data.as_matrix()
+			self.Y = numpy.delete(data,(self.remove_index),axis=0)
+			birdnames = list(count_data.index)
+			birdnames.pop(self.remove_index)
+			self.birdnames = birdnames
+			self.p = len(self.birdnames)
 	
 	def get_vector_spline(self,X,Y,sigma,period):
 		if len(self.combine_index)==self.p:
