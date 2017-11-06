@@ -64,7 +64,7 @@ class BloodmealSpline():
 			self.birdnames = list(count_data.index)
 			self.Y = count_data.as_matrix()
 			self.p = len(self.birdnames)
-		elif self.combined_index!=[]:
+		elif self.combine_index!=[]:
 			birdnames = list(count_data.index)
 			Y = count_data.as_matrix()
 			self.p = len(birdnames)

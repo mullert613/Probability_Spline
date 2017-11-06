@@ -1,7 +1,8 @@
 import generate_splines
-combine_index = [[3,6],[4,6],[5,6]]
-for x in combine_index:
-	generate_splines_fun(x)
+from generate_splines import generate_splines_fun
+remove_index = [0,1,2,3,4,5,6]
+for x in remove_index:
+	generate_splines.generate_splines_fun(remove_index=x)
 
 
 
