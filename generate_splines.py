@@ -11,6 +11,9 @@ import pickle
 import joblib
 from time import gmtime, strftime
 
+
+
+
 def parallel_splines(to_be_run,file_name,N,Mos_Class=0,sigma=0,sample=0,combine_index=[],remove_index=[]):
 	if Mos_Class==0:
 		if N==1:
@@ -25,13 +28,16 @@ def parallel_splines(to_be_run,file_name,N,Mos_Class=0,sigma=0,sample=0,combine_
 			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 		
 	else:		#change function to take *kargs?
-		print('Start Time')
-		print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-		with joblib.Parallel(n_jobs=-1) as parallel:
-			output = parallel(joblib.delayed(to_be_run)(file_name,Mos_Class,sigma=sigma,sample=sample,combine_index=combine_index,remove_index=remove_index,seed=j+1,counter=j+1) for j in range(N))
+		if N==1:
+			output = to_be_run(file_name,Mos_Class,sigma=sigma,sample=sample)
+		else:
+			print('Start Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			with joblib.Parallel(n_jobs=-1) as parallel:
+				output = parallel(joblib.delayed(to_be_run)(file_name,Mos_Class,sigma=sigma,sample=sample) for j in range(N))
 
-		print('Finish Time')
-		print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+			print('Finish Time')
+			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 	return(output)
 
 def get_splines(bc_file,bm_file,bc_sigma,bm_sigma,N,combine_index,remove_index):
@@ -72,31 +78,8 @@ def generate_splines_fun(combine_index=[],remove_index=[]):
 	with open('mos_curve_sample.pkl', 'wb') as output:
 		pickle.dump(mos_curve,output) 	
 	return()
-'''
-print('Start Time')
-print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-# as written this doesn't output what I want
-with joblib.Parallel(n_jobs = -1) as parallel:
-	output = parallel(joblib.delayed(prob_spline.BloodmealSpline)(bm_file,sigma=bm_sigma,sample=1) for j in range(N))
-bm_splines = output
-print('Finish Time')
-print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
-print('Start Time')
-print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-# as written this doesn't output what I want
-with joblib.Parallel(n_jobs = -1) as parallel:
-	output = parallel(joblib.delayed(prob_spline.MosCurve)(msq_file,MosClass,sample=1) for j in range(N))
-mos_curve = output
-print('Finish Time')
-print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-
-with open('host_splines_sample.pkl', 'wb') as output:
-	pickle.dump(bc_splines,output) 
-
-with open('vectors_splines_sample.pkl', 'wb') as output:
-	pickle.dump(bm_splines,output) 
-
-with open('mos_curve_sample.pkl', 'wb') as output:
-	pickle.dump(mos_curve,output) 		
-'''
+if __name__ == '__main__':
+	remove_index = [0,1,2,3,4,5,6]
+	for x in remove_index:
+		generate_splines_fun(remove_index=x)
