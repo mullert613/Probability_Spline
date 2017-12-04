@@ -24,7 +24,7 @@ def generate_ODE(bc_splines,bm_splines,mos_curve,beta_vals,tstart,tend):
 	print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 	with joblib.Parallel(n_jobs=-1) as parallel:
 		output = parallel(joblib.delayed(prob_spline.Seasonal_Spline_ODE)(
-				bc_splines[j],bm_splines[j],mos_curve[j],tstart,tend,beta_1=beta_vals[j],counter=j) 
+				bc_splines[j],bm_splines[j],mos_curve,tstart,tend,beta_1=beta_vals[j],counter=j) 
 			for j in range(N))
 	print('Finish Time')
 	print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
@@ -35,10 +35,14 @@ def ODE_test(bc,bm,mos,beta,tstart,tend):
 	val = prob_spline.Seasonal_Spline_ODE(bc[j],bm[j],mos[j],tstart,tend,beta_1 = beta[j])
 	return(val)
 
-def generate_comparison_ODE(combine_index):
+def generate_comparison_ODE(combine_index=[],remove_index=[]):
 
-	bc_splines = pickle.load(open('host_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
-	bm_splines = pickle.load(open('vectors_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
+	if combine_index!=[]:
+		bc_splines = pickle.load(open('host_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
+		bm_splines = pickle.load(open('vectors_splines_sample_combine_index=%s.pkl' %combine_index,'rb'))
+	elif remove_index!=[]:
+		bc_splines = pickle.load(open('host_splines_sample_remove_index=%s.pkl' %remove_index,'rb'))
+		bm_splines = pickle.load(open('vectors_splines_sample_remove_index=%s.pkl' %remove_index,'rb'))
 	mos_curve  = pickle.load(open('mos_curve_sample.pkl','rb'))
 	tstart = prob_spline.time_transform(90)
 	tend   = prob_spline.time_transform(270)
@@ -51,8 +55,12 @@ def generate_comparison_ODE(combine_index):
 	beta1_vals = numpy.random.choice(beta1_samples,len(bc_splines))
 
 	ODE = generate_ODE(bc_splines,bm_splines,mos_curve,beta1_vals,tstart,tend)
-	with open('sampled_comparison_ODE_combined_index%s.pkl' %combine_index,'wb') as output:
-		pickle.dump(ODE,output)
+	if combine_index!=[]:
+		with open('sampled_comparison_ODE_combined_index%s.pkl' %combine_index,'wb') as output:
+			pickle.dump(ODE,output)
+	elif remove_index!=[]:
+		with open('sampled_comparison_ODE_remove_index%s.pkl' %remove_index,'wb') as output:
+			pickle.dump(ODE,output)	
 	'''
 	s_vals=[]
 	i_vals=[]
