@@ -23,7 +23,8 @@ def parallel_splines(to_be_run,file_name,N,Mos_Class=0,sigma=0,sample=0,combine_
 			print('Start Time')
 			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			with joblib.Parallel(n_jobs=-1) as parallel:
-				output = parallel(joblib.delayed(to_be_run)(file_name,sigma=sigma,sample=sample,combine_index=combine_index,remove_index=remove_index,seed=j+1,counter=j+1) for j in range(N))
+				output = parallel(joblib.delayed(to_be_run)(file_name,sigma=sigma,sample=sample,combine_index=combine_index,remove_index=remove_index,
+					seed=j+1) for j in range(N))
 			print('Finish Time')
 			print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 		
@@ -59,24 +60,25 @@ def generate_splines_fun(combine_index=[],remove_index=[]):
 	bc_file = "Days_BirdCounts.csv"
 	msq_file = "Vector_Data(NoZeros).csv"
 	bm_file = "Days_BloodMeal.csv"
-	#bc_sigma = 0		# for testing purposes
-	bc_sigma = pickle.load(open('Sigma_Vals_Cross_Validation_1mil_iter.pkl','rb'))
-	bm_sigma = 0.199
-	#bm_sigma= 0
+	bc_sigma = 0		# for testing purposes
+	#bc_sigma = pickle.load(open('Sigma_Vals_Cross_Validation_1mil_iter.pkl','rb'))
+	#bm_sigma = 0.199
+	bm_sigma= 0
 
 	MosClass = prob_spline.MosConstant
 
-	N = 1000 # number of samples to be generated
-	if combine_index != []:
-		for j in combine_index:
-			if j!=6:
-				bc_sigma.pop(j)
-	elif remove_index != []:
-		bc_sigma.pop(remove_index)
+	N = 2 # number of samples to be generated
+	if not isinstance(bc_sigma,int):
+		if combine_index != []:
+			for j in combine_index:
+				if j!=6:
+					bc_sigma.pop(j)
+		elif remove_index != []:
+			bc_sigma.pop(remove_index)
 	get_splines(bc_file,bm_file,bc_sigma,bm_sigma,N,combine_index,remove_index)
-	mos_curve = parallel_splines(prob_spline.MosCurve,msq_file,N,Mos_Class = prob_spline.MosConstant,sample=1)
-	with open('mos_curve_sample.pkl', 'wb') as output:
-		pickle.dump(mos_curve,output) 	
+	#mos_curve = parallel_splines(prob_spline.MosCurve,msq_file,N,Mos_Class = prob_spline.MosConstant,sample=1)
+	#with open('mos_curve_sample.pkl', 'wb') as output:
+	#	pickle.dump(mos_curve,output) 	
 	return()
 
 if __name__ == '__main__':
