@@ -191,7 +191,7 @@ def CI_vals(ODE,alpha,method,remove_index=[],combine_index=[],generate=1):
 
 
 def evaluate_sampled_ODE(file_name=[],combine_index=[],remove_index=[],generate=1,save_fig=1,CI_generate=0,
-	alpha=.85,method='numpy',plot='smoothed',frac=.1):
+	alpha=.85,method='numpy',plot='smoothed',frac=.1,**kargs):
 	if generate==0:
 		file_name = file_name
 	else:
@@ -228,8 +228,8 @@ def evaluate_sampled_ODE(file_name=[],combine_index=[],remove_index=[],generate=
 		ax.xaxis.set_tick_params(labelsize=8)
 		ax.xaxis.set_major_locator(MultipleLocator(30))
 		if plot=='smoothed':
-			ax.plot(x,lowess(x,i_mean[:,j],frac),color=color_val[j])
-			ax.fill_between(x,lowess(x,i_low[:,j],frac),lowess(x,i_upp[:,j],frac),color=color_val[j],alpha=.5)
+			ax.plot(x,lowess(x,i_mean[:,j],frac,**kargs),color=color_val[j])
+			ax.fill_between(x,lowess(x,i_low[:,j],frac,**kargs),lowess(x,i_upp[:,j],frac,**kargs),color=color_val[j],alpha=.5)
 		else:	
 		#ax.plot(x,i_low[:,j],color=color_val[j])
 			ax.plot(x,i_mean[:,j],color=color_val[j])
@@ -254,7 +254,7 @@ def evaluate_sampled_ODE(file_name=[],combine_index=[],remove_index=[],generate=
 	fig.tight_layout()
 	if save_fig==1:
 		if remove_index!=[]:
-			pylab.savefig('SavedFigures/remove_index=%s_lowess_frac=%s_infections.png' %(remove_index,frac))e
+			pylab.savefig('SavedFigures/remove_index=%s_lowess_frac=%s_infections.png' %(remove_index,frac))
 		if combine_index!=[]:
 			pylab.savefig('SavedFigures/combine_index=%s_infections.png' %combine_index)
 
